@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จำนวนเตียง</title>
+    <link rel="stylesheet" href="main.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background: linear-gradient(to right, rgb(55, 194, 115), rgb(183, 226, 196));
+        }
+        header {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        main {
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+            background-color: rgba(255,255,255,0.9);
+            border-radius: 12px;
+        }
+        a.back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: navy;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+        th {
+            background-color: rgb(4, 44, 24);
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: rgba(0,0,0,0.05);
+        }
+                tfoot td {
+            font-weight: bold;
+            background-color: rgba(4,44,24,0.9);
+            color: white;
+        }
+        input.number-input {
+            width: 80px;
+            text-align: center;
+            font-size: 16px;
+        }
+        @media (max-width: 600px) {
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>จำนวนเตียงโรงพยาบาลจัตุรัส</h1>
+    </header>
+    <main>
+        <a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
+        <table id="beds.html">
+            <thead>
+                <tr>
+                    <th>ตึกผู้ป่วย</th>
+                    <th>จำนวนเตียง</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ตึกแม่และเด็ก</td>
+                    <td>27</td>
+                </tr>
+                <tr>
+                    <td>ตึกผู้ป่วยในหญิง</td>
+                    <td>32</td>
+                <tr>
+                    <td>ตึกผู้ป่วยในชาย</td>
+                    <td>33</td>
+                </tr>
+                <tr>
+                    <td>ตึกผู้ป่วย ICU+Stroke</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>ตึกสงฆ์อาพาธ</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>รวมทั้งสิ้น</td>
+                    <td id="totalbeds">110</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+<script>
+        // ฟังก์ชันคำนวณรวมอัตโนมัติ
+        function calculateTotal() {
+            const inputs = document.querySelectorAll('.number-input');
+            let total = 0;
+            inputs.forEach(input => {
+                total += parseInt(input.value) || 0;
+            });
+            document.getElementById('totalbeds').textContent = total;
+        }
+
+        // เรียกคำนวณเมื่อโหลดหน้า
+        calculateTotal();
+
+        // เพิ่ม event listener ให้คำนวณทุกครั้งที่เปลี่ยนค่า
+        const inputs = document.querySelectorAll('.number-input');
+        inputs.forEach(input => {
+            input.addEventListener('input', calculateTotal);
+        });
+    </script>
+
+</body>
+</html>
+

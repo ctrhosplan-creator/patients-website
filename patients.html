@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>จำนวนผู้ป่วย แยกรายแผนกย้อนหลัง 3 ปี</title>
+<link rel="stylesheet" href="main.css">
+<style>
+body { margin:0; font-family:sans-serif; background: linear-gradient(to right, rgb(55,194,115), rgb(183,226,196)); }
+header { text-align:center; padding:30px 20px; }
+main { padding:20px; max-width:1000px; margin:auto; background-color: rgba(255,255,255,0.9); border-radius:12px; }
+a.back { display:inline-block; margin-bottom:20px; color:navy; text-decoration:none; font-weight:bold; }
+table { width:100%; border-collapse: collapse; margin-top:15px; }
+th, td { padding:12px; text-align:center; border:1px solid #333; }
+th { background-color: rgb(4,44,24); color:white; }
+tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
+tfoot td { font-weight:bold; background-color: rgba(4,44,24,0.9); color:white; }
+@media (max-width:600px){ th, td{ padding:8px; font-size:14px; } }
+</style>
+</head>
+<body>
+<header>
+    <h1>จำนวนผู้ป่วย แยกรายแผนกย้อนหลัง 3 ปี</h1>
+</header>
+<main>
+<a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>แผนก</th>
+            <th>ผู้ป่วยนอก 2565</th>
+            <th>ผู้ป่วยใน 2565</th>
+            <th>ผู้ป่วยนอก 2566</th>
+            <th>ผู้ป่วยใน 2566</th>
+            <th>ผู้ป่วยนอก 2567</th>
+            <th>ผู้ป่วยใน 2567</th>
+            <th>รวมทั้งหมด</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>อายุรกรรม</td>
+            <td>4,500</td>
+            <td>1,200</td>
+            <td>4,800</td>
+            <td>1,250</td>
+            <td>5,000</td>
+            <td>1,300</td>
+            <td>17,050</td>
+        </tr>
+        <tr>
+            <td>ศัลยกรรม</td>
+            <td>3,200</td>
+            <td>900</td>
+            <td>3,500</td>
+            <td>950</td>
+            <td>3,700</td>
+            <td>1,000</td>
+            <td>13,250</td>
+        </tr>
+     <tr>
+            <td>ศัลยกรรมกระดูกและข้อ</td>
+            <td>3,200</td>
+            <td>900</td>
+            <td>3,500</td>
+            <td>950</td>
+            <td>3,700</td>
+            <td>1,000</td>
+            <td>13,250</td>
+        </tr>
+            <tr>
+            <td>จักษุ</td>
+            <td>3,200</td>
+            <td>900</td>
+            <td>3,500</td>
+            <td>950</td>
+            <td>3,700</td>
+            <td>1,000</td>
+            <td>13,250</td>
+        </tr>
+        <tr>
+            <td>แม่และเด็ก</td>
+            <td>2,000</td>
+            <td>500</td>
+            <td>2,100</td>
+            <td>520</td>
+            <td>2,200</td>
+            <td>550</td>
+            <td>7,870</td>
+        </tr>
+        <tr>
+            <td>สูติ-นรีเวช</td>
+            <td>1,500</td>
+            <td>400</td>
+            <td>1,600</td>
+            <td>450</td>
+            <td>1,700</td>
+            <td>470</td>
+            <td>6,120</td>
+        </tr>
+        <tr>
+            <td>จิตเวช</td>
+            <td>600</td>
+            <td>150</td>
+            <td>650</td>
+            <td>160</td>
+            <td>700</td>
+            <td>170</td>
+            <td>2,430</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>รวมทั้งหมด</td>
+            <td>11,800</td>
+            <td>3,150</td>
+            <td>12,650</td>
+            <td>3,330</td>
+            <td>13,300</td>
+            <td>3,490</td>
+            <td>47,720</td>
+        </tr>
+    </tfoot>
+</table>
+</main>
+</body>
+</html>

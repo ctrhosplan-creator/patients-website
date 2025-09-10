@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>โรงพยาบาลจัตุรัส CHATTURAT HOSPITAL</title>
+
+    <link rel="stylesheet" href="main.css">
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(to right, rgb(55, 194, 115), rgb(183, 226, 196)); 
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            color: rgb(10, 10, 10);
+            text-align: center;
+            padding: 30px 0;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 40px;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 18px;
+        }
+      .button-group {
+      display: flex;
+      gap: 15px;
+       margin-top: 30px;
+    }
+     .btn {
+      flex: 1;
+      padding: 20px 0px;
+      font-size: 20px; 
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none; 
+        color: white;
+      background-color: rgb(4, 44, 24);
+      border: 2px solid white;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background-color: navy;
+    }
+    </style>
+</head>
+<body>
+  <header>
+    <h1>ข้อมูลทั่วไปสำหรับเจ้าหน้าที่</h1> 
+    <p>จัดทำโดย งานยุทธศาสตร์ โรงพยาบาลจัตุรัส</p>
+  </header>
+
+<div class="button-group">
+    <a href="history.html" class="btn">ประวัติโรงพยาบาล</a>
+    <a href="beds.html" class="btn">จำนวนเตียง</a>
+    <a href="staff.html" class="btn">บุคลากร</a>
+    <a href="patients.html" class="btn">จำนวนผู้ป่วยนอก/ใน</a>
+    <a href="ranking.html" class="btn">อันดับโรคผู้ป่วยนอก/ใน</a>
+    <a href="death_causes.html" class="btn">สาเหตุการเสียชีวิต</a>
+    <a href="refer.html" class="btn">สถิติการ Refer</a>
+</div>
+
+</body>
+</html>
