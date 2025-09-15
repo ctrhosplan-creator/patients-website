@@ -3,62 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>จำนวนเตียง</title>
-    <link rel="stylesheet" href="main.css">
+    <title>จำนวนเตียงโรงพยาบาลจัตุรัส</title>
     <style>
         body {
             margin: 0;
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(to right, rgb(55, 194, 115), rgb(183, 226, 196));
         }
+
         header {
             text-align: center;
             padding: 30px 20px;
+            color: #050505;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
         }
+
         main {
             padding: 20px;
             max-width: 900px;
             margin: auto;
-            background-color: rgba(255,255,255,0.9);
+            background-color: rgba(255,255,255,0.95);
             border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
         }
+
         a.back {
             display: inline-block;
             margin-bottom: 20px;
-            color: navy;
+            color: #2c3e50;
             text-decoration: none;
             font-weight: bold;
         }
+
+        a.back:hover {
+            color: #27ae60;
+            text-decoration: underline;
+        }
+
         table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border: 1px solid #333;
-        }
-        th {
-            background-color: rgb(4, 44, 24);
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: rgba(0,0,0,0.05);
-        }
-                tfoot td {
-            font-weight: bold;
-            background-color: rgba(4,44,24,0.9);
-            color: white;
-        }
-        input.number-input {
-            width: 80px;
-            text-align: center;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
             font-size: 16px;
         }
+
+        th, td {
+            padding: 14px 12px;
+            text-align: center;
+        }
+
+        th {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            background-color: #f0fff4;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        tfoot td {
+            font-weight: bold;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
         @media (max-width: 600px) {
             th, td {
-                padding: 8px;
+                padding: 10px 8px;
                 font-size: 14px;
             }
         }
@@ -70,7 +90,8 @@
     </header>
     <main>
         <a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
-        <table id="beds.html">
+
+        <table id="beds">
             <thead>
                 <tr>
                     <th>ตึกผู้ป่วย</th>
@@ -85,6 +106,7 @@
                 <tr>
                     <td>ตึกผู้ป่วยในหญิง</td>
                     <td>32</td>
+                </tr>
                 <tr>
                     <td>ตึกผู้ป่วยในชาย</td>
                     <td>33</td>
@@ -97,34 +119,30 @@
                     <td>ตึกสงฆ์อาพาธ</td>
                     <td>10</td>
                 </tr>
+            </tbody>
+            <tfoot>
                 <tr>
                     <td>รวมทั้งสิ้น</td>
-                    <td id="totalbeds">110</td>
+                    <td id="totalbeds">0</td>
                 </tr>
-            </tbody>
+            </tfoot>
         </table>
     </main>
-<script>
-        // ฟังก์ชันคำนวณรวมอัตโนมัติ
+
+    <script>
+        // ฟังก์ชันคำนวณรวมจากตัวเลขในตาราง
         function calculateTotal() {
-            const inputs = document.querySelectorAll('.number-input');
+            const rows = document.querySelectorAll('#beds tbody tr');
             let total = 0;
-            inputs.forEach(input => {
-                total += parseInt(input.value) || 0;
+            rows.forEach(row => {
+                const value = Number(row.cells[1].textContent) || 0;
+                total += value;
             });
             document.getElementById('totalbeds').textContent = total;
         }
 
         // เรียกคำนวณเมื่อโหลดหน้า
         calculateTotal();
-
-        // เพิ่ม event listener ให้คำนวณทุกครั้งที่เปลี่ยนค่า
-        const inputs = document.querySelectorAll('.number-input');
-        inputs.forEach(input => {
-            input.addEventListener('input', calculateTotal);
-        });
     </script>
-
 </body>
 </html>
-

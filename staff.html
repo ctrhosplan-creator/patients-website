@@ -1,156 +1,176 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>บุคลากรแยกตามวิชาชีพ (คำนวณรวมอัตโนมัติ)</title>
-    <link rel="stylesheet" href="main.css">
-    <style>
-        body {
-            margin: 0;
-            font-family: sans-serif;
-            background: linear-gradient(to right, rgb(55, 194, 115), rgb(183, 226, 196));
-        }
-        header {
-            text-align: center;
-            padding: 30px 20px;
-        }
-        main {
-            padding: 20px;
-            max-width: 700px;
-            margin: auto;
-            background-color: rgba(255,255,255,0.9);
-            border-radius: 12px;
-        }
-        a.back {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: navy;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border: 1px solid #333;
-        }
-        th {
-            background-color: rgb(4, 44, 24);
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: rgba(0,0,0,0.05);
-        }
-        tfoot td {
-            font-weight: bold;
-            background-color: rgba(4,44,24,0.9);
-            color: white;
-        }
-        input.number-input {
-            width: 80px;
-            text-align: center;
-            font-size: 16px;
-        }
-        @media (max-width: 600px) {
-            th, td {
-                padding: 8px;
-                font-size: 14px;
-            }
-            input.number-input {
-                width: 60px;
-                font-size: 14px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บุคลากรแยกตามวิชาชีพ (Google Sheets - Read Only)</title>
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #37c273, #b7e2c4);
+}
+
+header {
+    text-align: center;
+    padding: 30px 20px;
+    color: #070707;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+main {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+a.back {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+a.back:hover {
+    color: #16a085;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background-color: #fff;
+}
+
+th {
+    background: linear-gradient(90deg, #16a085, #1abc9c);
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 15px 10px;
+}
+
+tr:nth-child(odd) {
+    background: linear-gradient(90deg, #e0f7e9, #d0f0e6);
+}
+tr:nth-child(even) {
+    background: linear-gradient(90deg, #f4f9f4, #eaf6f1);
+}
+
+tr:hover {
+    background: linear-gradient(90deg, #c0f0d9, #b0ebd2);
+    transition: background 0.3s;
+}
+
+td, th {
+    text-align: center;
+    padding: 15px 10px;
+}
+
+tfoot td {
+    font-weight: bold;
+    background: linear-gradient(90deg, #16a085, #1abc9c);
+    color: #fff;
+}
+
+td.number-input {
+    width: 80px;
+    font-size: 16px;
+}
+
+@media (max-width: 600px) {
+    th, td {
+        padding: 10px 5px;
+        font-size: 14px;
+    }
+    td.number-input {
+        width: 60px;
+        font-size: 14px;
+    }
+}
+</style>
 </head>
 <body>
-    <header>
-        <h1>จำนวนบุคลากรโรงพยาบาลจัตุรัส แยกตามวิชาชีพ</h1>
-    </header>
-    <main>
-        <a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
-        <table id="staffTable">
-            <thead>
-                <tr>
-                    <th>วิชาชีพ</th>
-                    <th>จำนวนบุคลากร</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>แพทย์</td>
-                    <td>25</td>
-                </tr>
-                                <tr>
-                    <td>ทันตแพทย์</td>
-                    <td>7</td>
-                </tr>
-                                <tr>
-                    <td>เภสัชกร</td>
-                    <td>11</td>
-                </tr>
-                <tr>
-                    <td>พยาบาลวิชาชีพ  รวมทุกกลุ่มงาน</td>
-                    <td>94</td>
-                </tr>
-                <tr>
-                    <td>นวก.เวชสถิติ/จพ.เวชสถิติ</td>
-                    <td>2</td>
-                </tr>
-                <tr>
-                    <td>นักกายภาพบำบัด</td>
-                    <td>3</td>
-                </tr>
-                <tr>
-                    <td>นักเทคนิคการแพทย์</td>
-                    <td>5</td>
-                </tr>
-                                <tr>
-                    <td>นักรังสีการแพทย์</td>
-                    <td>2</td>
-                </tr>
-                                <tr>
-                    <td>นักวิชาการสาธารณสุข/นักสาธารณสุข</td>
-                    <td>8</td>
-                </tr>
-                <tr>
-                    <td>สหวิชาชีพอื่นๆ</td>
-                    <td>153</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>รวมทั้งหมด</td>
-                    <td id="totalStaff">198</td>
-                </tr>
-            </tfoot>
-        </table>
-    </main>
+<header>
+    <h1>จำนวนบุคลากรโรงพยาบาลจัตุรัส แยกตามวิชาชีพ</h1>
+</header>
+<main>
+    <a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
+    <table id="staffTable">
+        <thead>
+            <tr>
+                <th>วิชาชีพ</th>
+                <th>จำนวนบุคลากร</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- ข้อมูลจะถูกเติมจาก Google Sheets -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>รวมทั้งหมด</td>
+                <td id="totalStaff">0</td>
+            </tr>
+        </tfoot>
+    </table>
+</main>
 
-    <script>
-        // ฟังก์ชันคำนวณรวมอัตโนมัติ
-        function calculateTotal() {
-            const inputs = document.querySelectorAll('.number-input');
-            let total = 0;
-            inputs.forEach(input => {
-                total += parseInt(input.value) || 0;
-            });
-            document.getElementById('totalStaff').textContent = total;
+<script>
+// URL CSV ที่ได้จาก Google Sheets (Publish to web -> CSV)
+const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT3nHzUOF3UPdvcZ_HfDXPwe5FZGgH5vDcuCcTTrxpEgmQdD71PUGqgj0C5i40Mf18sVWnxrTupWs7Y/pub?output=csv';
+
+// ฟังก์ชัน parse CSV รองรับ comma ใน quotes
+function parseCSVRow(row) {
+    const regex = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
+    let result = [];
+    let match;
+    while ((match = regex.exec(row)) !== null) {
+        let value = match[0].trim();
+        if(value.startsWith('"') && value.endsWith('"')) {
+            value = value.slice(1, -1);
         }
+        result.push(value);
+    }
+    return result;
+}
 
-        // เรียกคำนวณเมื่อโหลดหน้า
-        calculateTotal();
+// ฟังก์ชันคำนวณรวมอัตโนมัติ
+function calculateTotal() {
+    const cells = document.querySelectorAll('td.number-input');
+    let total = 0;
+    cells.forEach(cell => { total += parseInt(cell.textContent) || 0; });
+    document.getElementById('totalStaff').textContent = total;
+}
 
-        // เพิ่ม event listener ให้คำนวณทุกครั้งที่เปลี่ยนค่า
-        const inputs = document.querySelectorAll('.number-input');
-        inputs.forEach(input => {
-            input.addEventListener('input', calculateTotal);
+// ดึงข้อมูลจาก Google Sheet CSV
+fetch(url)
+    .then(res => res.text())
+    .then(data => {
+        const rows = data.split('\n').slice(1); // ข้าม header
+        const tbody = document.querySelector('#staffTable tbody');
+
+        rows.forEach(row => {
+            if(row.trim() === '') return;
+            const columns = parseCSVRow(row);
+            const profession = columns[0] || '';
+            const number = parseInt(columns[1]) || 0;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${profession}</td>
+                <td class="number-input">${number}</td>
+            `;
+            tbody.appendChild(tr);
         });
-    </script>
+
+        calculateTotal(); // คำนวณรวมครั้งแรก
+    })
+    .catch(err => console.error('ไม่สามารถดึงข้อมูล Google Sheet ได้', err));
+</script>
 </body>
 </html>

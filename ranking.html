@@ -4,103 +4,133 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>อันดับ 5 โรคผู้ป่วย</title>
-<link rel="stylesheet" href="main.css">
 <style>
 body { margin:0; font-family:sans-serif; background: linear-gradient(to right, rgb(55,194,115), rgb(183,226,196)); }
 header { text-align:center; padding:30px 20px; }
 main { padding:20px; max-width:900px; margin:auto; background-color: rgba(255,255,255,0.9); border-radius:12px; }
-a.back { display:inline-block; margin-bottom:20px; color:navy; text-decoration:none; font-weight:bold; }
+label { font-weight:bold; margin-right:10px; }
+select { padding:6px 10px; border-radius:6px; border:1px solid #333; margin-right:10px; }
 table { width:100%; border-collapse: collapse; margin-top:15px; }
 th, td { padding:12px; text-align:center; border:1px solid #333; }
 th { background-color: rgb(4,44,24); color:white; }
 tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
-tfoot td { font-weight:bold; background-color: rgba(4,44,24,0.9); color:white; }
-@media (max-width:600px){ th, td{ padding:8px; font-size:14px; } }
 </style>
 </head>
 <body>
 <header>
-    <h1>อันดับ 5 โรคผู้ป่วย</h1>
+<h1>อันดับ 5 โรคผู้ป่วย</h1>
 </header>
 <main>
 <a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
 
-<h2>ผู้ป่วยนอก (OPD)</h2>
-<table>
-    <thead>
-        <tr>
-            <th>อันดับ</th>
-            <th>รหัสโรค / ชื่อโรค</th>
-            <th>จำนวนผู้ป่วย</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>1</td>
-            <td>J00 – หวัด</td>
-            <td>1,500</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>E11 – เบาหวาน</td>
-            <td>1,200</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>I10 – ความดันโลหิตสูง</td>
-            <td>1,100</td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>J06 – การติดเชื้อทางเดินหายใจบน</td>
-            <td>950</td>
-        </tr>
-        <tr>
-            <td>5</td>
-            <td>M54 – ปวดหลัง</td>
-            <td>800</td>
-        </tr>
-    </tbody>
-</table>
+<div style="margin-bottom:20px;">
+  <label for="patientType">เลือกประเภทผู้ป่วย:</label>
+  <select id="patientType">
+    <option value="opd">ผู้ป่วยนอก (OPD)</option>
+    <option value="ipd">ผู้ป่วยใน (IPD)</option>
+  </select>
 
-<h2>ผู้ป่วยใน (IPD)</h2>
-<table>
-    <thead>
-        <tr>
-            <th>อันดับ</th>
-            <th>รหัสโรค / ชื่อโรค</th>
-            <th>จำนวนผู้ป่วย</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>1</td>
-            <td>I50 – หัวใจล้มเหลว</td>
-            <td>300</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>J18 – ปอดบวม</td>
-            <td>250</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>E11 – เบาหวาน</td>
-            <td>200</td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>K35 – ไส้ติ่งอักเสบ</td>
-            <td>180</td>
-        </tr>
-        <tr>
-            <td>5</td>
-            <td>I21 – กล้ามเนื้อหัวใจขาดเลือดเฉียบพลัน</td>
-            <td>150</td>
-        </tr>
-    </tbody>
-</table>
+  <label for="yearSelect">เลือกปี:</label>
+  <select id="yearSelect">
+    <option value="2566">2566</option>
+    <option value="2567">2567</option>
+    <option value="2568" selected>2568</option>
+  </select>
+</div>
 
+<div id="tableContainer">⏳ กำลังโหลดข้อมูล...</div>
+
+<script>
+// ข้อมูล static สำหรับปี 2566 และ 2567
+const staticData = {
+  opd: {
+    "2566": [
+      ["HT","5099"],
+      ["DM","4173"],
+      ["URI","3193"],
+      ["Covid-19","1281"],
+      ["Dyspepsia","1101"]
+    ],
+    "2567": [
+      ["CKD5","14810"],
+      ["HT","11922"],
+      ["DM","11370"],
+      ["Dyspepsia","2935"],
+      ["URI","2786"]
+    ]
+  },
+  ipd: {
+    "2566": [
+      ["Pneumonia","103"],
+      ["Head Injury","93"],
+      ["COPD","55"],
+      ["AGE","54"],
+      ["CHF","50"]
+    ],
+    "2567": [
+      ["Pneumonia","416"],
+      ["Sepsis","377"],
+      ["Senile cataract","311"],
+      ["Stroke","229"],
+      ["Intracranail injury","211"]
+    ]
+  }
+};
+
+// ลิงก์ CSV สำหรับปี 2568
+const csvLinks2568 = {
+  opd: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfILYO-grwMvz_XxbBiMtN0xxVdz8_SNy0hWPt3UTdW5u0PvXGI2f96TKn-cuJ_3yuVlnL9mzWXjGv/pub?gid=0&single=true&output=csv",
+  ipd: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRguUkbI1WPemYRAI7QCJMgX9Tbvw961umVNShBwROZlWDT0GbxQy3IqMd4dZAZmcnEE4jMyOkhwMp/pub?gid=0&single=true&output=csv"
+};
+
+// แปลง array → HTML Table สำหรับ static พร้อมอันดับ
+function renderStaticTable(dataArray){
+  let html = "<table><thead><tr><th>อันดับ</th><th>ชื่อโรค</th><th>จำนวนผู้ป่วย</th></tr></thead><tbody>";
+  dataArray.forEach((r,i)=>{
+    html += `<tr><td>${i+1}</td><td>${r[0]}</td><td>${r[1]}</td></tr>`;
+  });
+  html += "</tbody></table>";
+  return html;
+}
+
+// แปลง CSV → HTML Table สำหรับปี 2568 พร้อมอันดับ
+function renderCSVtoTable(csvText) {
+  const rows = csvText.trim().split("\n").map(r => r.split(","));
+  let html = "<table><thead><tr><th>อันดับ</th><th>ชื่อโรค</th><th>จำนวนผู้ป่วย</th></tr></thead><tbody>";
+  rows.slice(1).forEach((r,i)=>{
+    html += `<tr><td>${i+1}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`;
+  });
+  html += "</tbody></table>";
+  return html;
+}
+
+// โหลดตารางตาม dropdown
+function loadTable() {
+  const type = document.getElementById("patientType").value;
+  const year = document.getElementById("yearSelect").value;
+  const container = document.getElementById("tableContainer");
+  
+  if(year === "2568"){
+    // โหลดจาก CSV
+    const url = csvLinks2568[type];
+    container.innerHTML = "⏳ กำลังโหลดข้อมูล...";
+    fetch(url)
+      .then(r => r.text())
+      .then(data => container.innerHTML = renderCSVtoTable(data))
+      .catch(()=> container.innerHTML = "⚠️ โหลดข้อมูลไม่สำเร็จ");
+  } else {
+    // โหลดจาก staticData
+    container.innerHTML = renderStaticTable(staticData[type][year]);
+  }
+}
+
+// โหลดครั้งแรก
+loadTable();
+
+// เปลี่ยน dropdown
+document.getElementById("patientType").addEventListener("change", loadTable);
+document.getElementById("yearSelect").addEventListener("change", loadTable);
+</script>
 </main>
 </body>
 </html>

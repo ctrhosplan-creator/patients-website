@@ -1,36 +1,25 @@
-const ctx = document.getElementById('ipdReferInChart').getContext('2d');
-const data = {
-    labels: ['อายุรกรรม','ศัลยกรรม','ศัลยกรรมกระดูกและข้อ','จักษุ','แม่และเด็ก','สูติ-นรีเวช','จิตเวช'],
-    datasets: [
-        { label: '2565', data: [25,20,18,10,12,8,5], backgroundColor: 'rgba(75,192,192,0.7)' },
-        { label: '2566', data: [30,22,20,12,15,10,6], backgroundColor: 'rgba(54,162,235,0.7)' },
-        { label: '2567', data: [35,25,22,15,18,12,8], backgroundColor: 'rgba(255,159,64,0.7)' }
-    ]
-};
+<div id="sheetTable"></div>
 
-const config = {
-    type: 'bar',
-    data: data,
-    options: {
-        responsive: true,
-        plugins: {
-            title: { display:true, text:'IPD Refer In แยกแผนก' },
-            tooltip: { mode:'index', intersect:false },
-            legend: { position:'top' }
-        },
-        scales: {
-            x: { stacked:false },
-            y: { stacked:false, beginAtZero:true }
-        },
-        layout: {
-            padding: 10
-        },
-        // ตั้งค่าพื้นหลังของกราฟ
-        backgroundColor: 'white' 
-    }
-};
+<script>
 
-// เพิ่มพื้นหลังสีขาวให้ canvas
-ctx.canvas.style.backgroundColor = 'white';
+</script>const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQkeNpfWKavDklihMocnMbZtI4nub9OYOTJ4Y5ceK7ThGmnVTYm0wmyumDjx6wqLbs6JLV2Yna6872o/pub?gid=0&single=true&output=csv";
 
-new Chart(ctx, config);
+fetch(sheetURL)
+  .then(response => response.text())
+  .then(data => {
+    const rows = data.split("\n").map(r => r.split(","));
+    let html = "<table border='1'><thead><tr>";
+    rows[0].forEach(col => html += `<th>${col}</th>`);
+    html += "</tr></thead><tbody>";
+    rows.slice(1).forEach(r => {
+      if(r[0]) {
+        html += "<tr>";
+        r.forEach(c => html += `<td>${c}</td>`);
+        html += "</tr>";
+      }
+    });
+    html += "</tbody></table>";
+    document.getElementById("sheetTable").innerHTML = html;
+  });
+</script>
+

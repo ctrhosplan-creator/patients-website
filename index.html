@@ -1,63 +1,131 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>โรงพยาบาลจัตุรัส CHATTURAT HOSPITAL</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>โรงพยาบาลจัตุรัส CHATTURAT HOSPITAL</title>
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(to right, rgb(55, 194, 115), rgb(183, 226, 196));
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
 
-    <link rel="stylesheet" href="main.css">
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    flex-wrap: wrap;
+    color: rgb(10,10,10);
+}
+.header-left h1 {
+    margin: 0;
+    font-size: 32px;
+}
+.header-left p {
+    margin: 5px 0 0;
+    font-size: 16px;
+}
 
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            background: linear-gradient(to right, rgb(55, 194, 115), rgb(183, 226, 196)); 
-            display: flex;
-            flex-direction: column;
-        }
-        header {
-            color: rgb(10, 10, 10);
-            text-align: center;
-            padding: 30px 0;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 40px;
-        }
-        header p {
-            margin: 5px 0 0;
-            font-size: 18px;
-        }
-      .button-group {
-      display: flex;
-      gap: 15px;
-       margin-top: 30px;
+/* Digital LED Clock */
+#datetime {
+    background-color: rgb(4, 44, 24);
+    color: #00ff88;
+    padding: 10px 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.5),
+                0 0 15px #00ff88;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px #00ff88;
+}
+#time span {
+    display: inline-block;
+    position: relative;
+    top: 0;
+    transition: top 0.3s ease-in-out;
+    animation: flicker 1s infinite;
+}
+@keyframes flicker {
+    0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; }
+    20%,22%,24%,55% { opacity: 0.3; }
+}
+
+/* Buttons - สีเขียวปกติ → hover gradient น้ำเงินเคลื่อนไหว */
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn {
+    flex: 1 1 180px;
+    padding: 20px 0;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    background: linear-gradient(135deg, #037a32, #00aa55); /* สีเขียวปกติ */
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    background-size: 200% 200%;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #0077cc, #00aaff); /* gradient น้ำเงิน */
+    background-size: 200% 200%;
+    animation: gradientMove 2s infinite alternate;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
-     .btn {
-      flex: 1;
-      padding: 20px 0px;
-      font-size: 20px; 
-      font-weight: bold;
-      text-align: center;
-      text-decoration: none; 
-        color: white;
-      background-color: rgb(4, 44, 24);
-      border: 2px solid white;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .btn:hover {
-      background-color: navy;
-    }
-    </style>
+    .header-left h1 { font-size: 24px; }
+    .header-left p, #datetime { font-size: 14px; }
+    .btn { font-size: 16px; padding: 15px 0; }
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>ข้อมูลทั่วไปสำหรับเจ้าหน้าที่</h1> 
-    <p>จัดทำโดย งานยุทธศาสตร์ โรงพยาบาลจัตุรัส</p>
-  </header>
+
+<header>
+    <div class="header-left">
+        <h1>ข้อมูลทั่วไปสำหรับเจ้าหน้าที่</h1>
+        <p>จัดทำโดย งานยุทธศาสตร์ โรงพยาบาลจัตุรัส</p>
+    </div>
+    <div class="header-right">
+        <div id="datetime">
+            <div id="date"></div>
+            <div id="time"></div>
+        </div>
+    </div>
+</header>
 
 <div class="button-group">
     <a href="history.html" class="btn">ประวัติโรงพยาบาล</a>
@@ -68,6 +136,37 @@
     <a href="death_causes.html" class="btn">สาเหตุการเสียชีวิต</a>
     <a href="refer.html" class="btn">สถิติการ Refer</a>
 </div>
+
+<script>
+let previousTime = '';
+
+function updateDateTime() {
+    const now = new Date();
+    const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('date').textContent = now.toLocaleDateString('th-TH', optionsDate);
+
+    const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+    const currentTime = now.toLocaleTimeString('th-TH', optionsTime);
+
+    const timeContainer = document.getElementById('time');
+    if(previousTime){
+        let html = '';
+        for(let i=0; i<currentTime.length; i++){
+            let prevChar = previousTime[i]||'';
+            let currChar = currentTime[i];
+            html += `<span style="top:${prevChar !== currChar ? '-20px' : '0'}">${currChar}</span>`;
+        }
+        timeContainer.innerHTML = html;
+        setTimeout(()=>{ [...timeContainer.children].forEach(span=>span.style.top='0'); }, 300);
+    } else {
+        timeContainer.innerHTML = currentTime.split('').map(c=>`<span>${c}</span>`).join('');
+    }
+    previousTime = currentTime;
+}
+
+setInterval(updateDateTime, 1000);
+updateDateTime();
+</script>
 
 </body>
 </html>

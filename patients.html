@@ -3,126 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>จำนวนผู้ป่วย แยกรายแผนกย้อนหลัง 3 ปี</title>
-<link rel="stylesheet" href="main.css">
+<title>จำนวนผู้ป่วย แยกรายแผนกและตึกย้อนหลัง 3 ปี</title>
 <style>
-body { margin:0; font-family:sans-serif; background: linear-gradient(to right, rgb(55,194,115), rgb(183,226,196)); }
-header { text-align:center; padding:30px 20px; }
-main { padding:20px; max-width:1000px; margin:auto; background-color: rgba(255,255,255,0.9); border-radius:12px; }
-a.back { display:inline-block; margin-bottom:20px; color:navy; text-decoration:none; font-weight:bold; }
-table { width:100%; border-collapse: collapse; margin-top:15px; }
-th, td { padding:12px; text-align:center; border:1px solid #333; }
-th { background-color: rgb(4,44,24); color:white; }
-tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
-tfoot td { font-weight:bold; background-color: rgba(4,44,24,0.9); color:white; }
-@media (max-width:600px){ th, td{ padding:8px; font-size:14px; } }
+body { 
+  margin:0; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  background: linear-gradient(to right, #37c273, #b7e2c4); 
+}
+header { 
+  text-align:center; 
+  padding:30px 20px; 
+  color:black;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+main { 
+  padding:20px; 
+  max-width:1000px; 
+  margin:auto; 
+  background-color: rgba(255,255,255,0.97); 
+  border-radius:12px; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+select { 
+  padding:6px 12px; 
+  border-radius:6px; 
+  border:1px solid #333; 
+  margin-right:10px; 
+  font-size: 16px;
+}
+table { 
+  width:100%; 
+  border-collapse: separate; 
+  border-spacing:0;
+  border-radius:12px; 
+  overflow:hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  font-size: 16px;
+}
+td, th { 
+  padding:12px; 
+  text-align:center; 
+  border:1px solid #ccc; 
+}
+
+/* gradient ใหม่สำหรับหัวตาราง */
+th { 
+  background: linear-gradient(90deg, #388E3C, #66BB6A); 
+  color:white; 
+  font-size: 17px;
+  text-transform: uppercase;
+}
+
+/* แถวสลับ gradient ใหม่ */
+tr:nth-child(odd) { 
+  background: linear-gradient(90deg, #E8F5E9, #C8E6C9); 
+}
+tr:nth-child(even) { 
+  background: linear-gradient(90deg, #F1F8E9, #DCEEDC); 
+}
+
+/* Hover effect gradient */
+tr:hover { 
+  background: linear-gradient(90deg, #A5D6A7, #81C784); 
+  transition: background 0.3s;
+}
+
+/* Footer รวมทั้งหมด gradient */
+tr.highlight td { 
+  background: linear-gradient(90deg, #FFF59D, #FFE082); 
+  font-weight:bold; 
+  color:#000;
+}
 </style>
 </head>
 <body>
 <header>
-    <h1>จำนวนผู้ป่วย แยกรายแผนกย้อนหลัง 3 ปี</h1>
+<h1>จำนวนผู้ป่วย แยกรายแผนกและตึกย้อนหลัง 3 ปี</h1>
 </header>
 <main>
-<a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
+<a href="index.html" style="text-decoration:none; color:#2E7D32; font-weight:bold;">&larr; กลับหน้าหลัก</a>
 
-<table>
-    <thead>
-        <tr>
-            <th>แผนก</th>
-            <th>ผู้ป่วยนอก 2565</th>
-            <th>ผู้ป่วยใน 2565</th>
-            <th>ผู้ป่วยนอก 2566</th>
-            <th>ผู้ป่วยใน 2566</th>
-            <th>ผู้ป่วยนอก 2567</th>
-            <th>ผู้ป่วยใน 2567</th>
-            <th>รวมทั้งหมด</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>อายุรกรรม</td>
-            <td>4,500</td>
-            <td>1,200</td>
-            <td>4,800</td>
-            <td>1,250</td>
-            <td>5,000</td>
-            <td>1,300</td>
-            <td>17,050</td>
-        </tr>
-        <tr>
-            <td>ศัลยกรรม</td>
-            <td>3,200</td>
-            <td>900</td>
-            <td>3,500</td>
-            <td>950</td>
-            <td>3,700</td>
-            <td>1,000</td>
-            <td>13,250</td>
-        </tr>
-     <tr>
-            <td>ศัลยกรรมกระดูกและข้อ</td>
-            <td>3,200</td>
-            <td>900</td>
-            <td>3,500</td>
-            <td>950</td>
-            <td>3,700</td>
-            <td>1,000</td>
-            <td>13,250</td>
-        </tr>
-            <tr>
-            <td>จักษุ</td>
-            <td>3,200</td>
-            <td>900</td>
-            <td>3,500</td>
-            <td>950</td>
-            <td>3,700</td>
-            <td>1,000</td>
-            <td>13,250</td>
-        </tr>
-        <tr>
-            <td>แม่และเด็ก</td>
-            <td>2,000</td>
-            <td>500</td>
-            <td>2,100</td>
-            <td>520</td>
-            <td>2,200</td>
-            <td>550</td>
-            <td>7,870</td>
-        </tr>
-        <tr>
-            <td>สูติ-นรีเวช</td>
-            <td>1,500</td>
-            <td>400</td>
-            <td>1,600</td>
-            <td>450</td>
-            <td>1,700</td>
-            <td>470</td>
-            <td>6,120</td>
-        </tr>
-        <tr>
-            <td>จิตเวช</td>
-            <td>600</td>
-            <td>150</td>
-            <td>650</td>
-            <td>160</td>
-            <td>700</td>
-            <td>170</td>
-            <td>2,430</td>
-        </tr>
-    </tbody>
-    <tfoot>
-        <tr>
-            <td>รวมทั้งหมด</td>
-            <td>11,800</td>
-            <td>3,150</td>
-            <td>12,650</td>
-            <td>3,330</td>
-            <td>13,300</td>
-            <td>3,490</td>
-            <td>47,720</td>
-        </tr>
-    </tfoot>
-</table>
+<div style="margin-bottom:20px;">
+  <label for="yearSelect">เลือกปี:</label>
+  <select id="yearSelect">
+    <option value="2566">2566</option>
+    <option value="2567">2567</option>
+    <option value="2568" selected>2568</option>
+  </select>
+
+  <label for="summarySelect">แสดง:</label>
+  <select id="summarySelect">
+    <option value="opd_detail">OPD แยกแผนก</option>
+    <option value="ipd_detail">IPD แยกตึก</option>
+  </select>
+</div>
+
+<div id="tableContainer">⏳ กำลังโหลดข้อมูล...</div>
+
+<script>
+// ข้อมูล OPD แยกแผนก
+const opdDepartments = ["อายุรกรรม","ศัลยกรรม","ศัลยกรรมกระดูกและข้อ","จักษุ","สูตินรีเวช","จิตเวช","ทันตกรรม","แผนกอื่นๆ"];
+const opdData = {
+  "2566": {"อายุรกรรม":{visits:92714},"ศัลยกรรม":{visits:13721},"ศัลยกรรมกระดูกและข้อ":{visits:235},"จักษุ":{visits:2839},"สูตินรีเวช":{visits:1851},"จิตเวช":{visits:4267},"ทันตกรรม":{visits:10063},"แผนกอื่นๆ":{visits:499}},
+  "2567": {"อายุรกรรม":{visits:92817},"ศัลยกรรม":{visits:13821},"ศัลยกรรมกระดูกและข้อ":{visits:3817},"จักษุ":{visits:5160},"สูตินรีเวช":{visits:2154},"จิตเวช":{visits:5752},"ทันตกรรม":{visits:11852},"แผนกอื่นๆ":{visits:44270}},
+  "2568": {"อายุรกรรม":{visits:89724},"ศัลยกรรม":{visits:12107},"ศัลยกรรมกระดูกและข้อ":{visits:4559},"จักษุ":{visits:4477},"สูตินรีเวช":{visits:2716},"จิตเวช":{visits:6948},"ทันตกรรม":{visits:11145},"แผนกอื่นๆ":{visits:41954}}
+};
+
+// ข้อมูล IPD แยกตึก
+const ipdBuildings = ["ตึกแม่และเด็ก","ตึกผู้ป่วยชาย","ตึกผู้ป่วยหญิง","ตึก ICU","ตึกพิเศษ","ตึกคลอด","Homeward","ตึกอื่นๆ"];
+const ipdData = {
+  "2566": {"ตึกแม่และเด็ก":{visits:0},"ตึกผู้ป่วยชาย":{visits:2002},"ตึกผู้ป่วยหญิง":{visits:1982},"ตึก ICU":{visits:82},"ตึกพิเศษ":{visits:1178},"ตึกคลอด":{visits:272},"Homeward":{visits:33},"ตึกอื่นๆ":{visits:0}},
+  "2567": {"ตึกแม่และเด็ก":{visits:0},"ตึกผู้ป่วยชาย":{visits:2490},"ตึกผู้ป่วยหญิง":{visits:2390},"ตึก ICU":{visits:210},"ตึกพิเศษ":{visits:1039},"ตึกคลอด":{visits:309},"Homeward":{visits:137},"ตึกอื่นๆ":{visits:23}},
+  "2568": {"ตึกแม่และเด็ก":{visits:1136},"ตึกผู้ป่วยชาย":{visits:2311},"ตึกผู้ป่วยหญิง":{visits:2233},"ตึก ICU":{visits:213},"ตึกพิเศษ":{visits:109},"ตึกคลอด":{visits:141},"Homeward":{visits:235},"ตึกอื่นๆ":{visits:0}}
+};
+
+// ฟังก์ชันสร้างตาราง
+function renderTable() {
+  const year = document.getElementById("yearSelect").value;
+  const summary = document.getElementById("summarySelect").value;
+  const container = document.getElementById("tableContainer");
+  container.innerHTML = "⏳ กำลังโหลดข้อมูล...";
+
+  let html = "<table><thead><tr>";
+
+  if(summary === "opd_detail") {
+    html += "<th>แผนก</th><th>จำนวนครั้ง</th></tr></thead><tbody>";
+    let totalVisits = 0;
+    opdDepartments.forEach(dep => {
+      const d = opdData[year][dep];
+      totalVisits += d.visits;
+      html += `<tr><td>${dep}</td><td>${d.visits.toLocaleString()}</td></tr>`;
+    });
+    html += `<tr class="highlight"><td>รวมทั้งหมด</td><td>${totalVisits.toLocaleString()}</td></tr>`;
+  } else if(summary === "ipd_detail") {
+    html += "<th>ตึก</th><th>จำนวนครั้ง</th></tr></thead><tbody>";
+    let totalVisits = 0;
+    ipdBuildings.forEach(b => {
+      const d = ipdData[year][b];
+      totalVisits += d.visits;
+      html += `<tr><td>${b}</td><td>${d.visits.toLocaleString()}</td></tr>`;
+    });
+    html += `<tr class="highlight"><td>รวมทั้งหมด</td><td>${totalVisits.toLocaleString()}</td></tr>`;
+  }
+
+  html += "</tbody></table>";
+  container.innerHTML = html;
+}
+
+// event listener
+document.getElementById("yearSelect").addEventListener("change", renderTable);
+document.getElementById("summarySelect").addEventListener("change", renderTable);
+
+// โหลดครั้งแรก
+renderTable();
+</script>
 </main>
 </body>
 </html>
