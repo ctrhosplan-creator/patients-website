@@ -10,10 +10,25 @@ header { text-align:center; padding:30px 20px; }
 main { padding:20px; max-width:900px; margin:auto; background-color: rgba(255,255,255,0.9); border-radius:12px; }
 label { font-weight:bold; margin-right:10px; }
 select { padding:6px 10px; border-radius:6px; border:1px solid #333; margin-right:10px; }
-table { width:100%; border-collapse: collapse; margin-top:15px; }
-th, td { padding:12px; text-align:center; border:1px solid #333; }
+table { width:100%; border-collapse: collapse; margin-top:15px; display:block; overflow-x:auto; }
+th, td { padding:12px; text-align:center; border:1px solid #333; white-space: nowrap; }
 th { background-color: rgb(4,44,24); color:white; }
 tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
+a.back { display:inline-block; margin-bottom:15px; text-decoration:none; color:white; background:rgb(4,44,24); padding:8px 16px; border-radius:6px; }
+a.back:hover { background:rgb(22,90,50); }
+#tableContainer table { animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.spinner {
+  border: 4px solid rgba(0,0,0,0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #333;
+  animation: spin 1s linear infinite;
+  display:inline-block;
+  vertical-align: middle;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -38,10 +53,14 @@ tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
   </select>
 </div>
 
-<div id="tableContainer">⏳ กำลังโหลดข้อมูล...</div>
+<div id="tableContainer">
+  <span class="spinner"></span> กำลังโหลดข้อมูล...
+</div>
 
+<!-- PapaParse -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
-// ข้อมูล static สำหรับปี 2566 และ 2567
+// ====== Static Data ======
 const staticData = {
   opd: {
     "2566": [
@@ -77,57 +96,87 @@ const staticData = {
   }
 };
 
-// ลิงก์ CSV สำหรับปี 2568
+// ====== CSV Links ปี 2568 ======
 const csvLinks2568 = {
-  opd: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfILYO-grwMvz_XxbBiMtN0xxVdz8_SNy0hWPt3UTdW5u0PvXGI2f96TKn-cuJ_3yuVlnL9mzWXjGv/pub?gid=0&single=true&output=csv",
+  opd_general: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfILYO-grwMvz_XxbBiMtN0xxVdz8_SNy0hWPt3UTdW5u0PvXGI2f96TKn-cuJ_3yuVlnL9mzWXjGv/pub?gid=0&single=true&output=csv",
+  opd_ncd: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1JyYvEW-GNlsmuIWS3mQ-QYzBRxstG4L90m_egN0UG61ZaCcyTaWQTfU4wkIWZZj8xpxK8u6mpgMX/pub?output=csv",
   ipd: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRguUkbI1WPemYRAI7QCJMgX9Tbvw961umVNShBwROZlWDT0GbxQy3IqMd4dZAZmcnEE4jMyOkhwMp/pub?gid=0&single=true&output=csv"
 };
 
-// แปลง array → HTML Table สำหรับ static พร้อมอันดับ
-function renderStaticTable(dataArray){
-  let html = "<table><thead><tr><th>อันดับ</th><th>ชื่อโรค</th><th>จำนวนผู้ป่วย</th></tr></thead><tbody>";
-  dataArray.forEach((r,i)=>{
-    html += `<tr><td>${i+1}</td><td>${r[0]}</td><td>${r[1]}</td></tr>`;
+// ====== สร้าง HTML Table ======
+function renderTable(title, rows){
+  let html = `<h3 style="margin-top:25px;">${title}</h3>`;
+  html += `<table>
+             <thead>
+               <tr>
+                 <th>อันดับ</th>
+                 <th>ชื่อโรค</th>
+                 <th>จำนวนผู้ป่วย</th>
+               </tr>
+             </thead>
+             <tbody>`;
+  rows.forEach((r,i)=>{
+    html += `<tr>
+               <td>${i+1}</td>
+               <td>${r[0]}</td>
+               <td>${Number(r[1]).toLocaleString()}</td>
+             </tr>`;
   });
-  html += "</tbody></table>";
+  html += `</tbody></table>`;
   return html;
 }
 
-// แปลง CSV → HTML Table สำหรับปี 2568 พร้อมอันดับ
-function renderCSVtoTable(csvText) {
-  const rows = csvText.trim().split("\n").map(r => r.split(","));
-  let html = "<table><thead><tr><th>อันดับ</th><th>ชื่อโรค</th><th>จำนวนผู้ป่วย</th></tr></thead><tbody>";
-  rows.slice(1).forEach((r,i)=>{
-    html += `<tr><td>${i+1}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`;
-  });
-  html += "</tbody></table>";
-  return html;
+// ====== แปลง CSV → Table ด้วย PapaParse และเลือก 5 อันดับ ======
+function renderCSVtoTable(title, csvText){
+  const parsed = Papa.parse(csvText, {header:true, skipEmptyLines:true});
+  let rows = parsed.data.map(r => [r['ชื่อโรค'] || r['Disease'] || r[Object.keys(r)[1]], 
+                                   r['จำนวนผู้ป่วย'] || r['Count'] || r[Object.keys(r)[2]]]);
+  // ลบ row ที่ไม่มีข้อมูล
+  rows = rows.filter(r=>r[0] && r[1]);
+  // แปลงจำนวนเป็นตัวเลขและ sort ลดหลั่น
+  rows = rows.map(r=>[r[0], Number(r[1].toString().replace(/,/g,''))])
+             .sort((a,b)=>b[1]-a[1])
+             .slice(0,5); // เอา 5 อันดับแรก
+  return renderTable(title, rows);
 }
 
-// โหลดตารางตาม dropdown
-function loadTable() {
+// ====== โหลดข้อมูล ======
+function loadTable(){
   const type = document.getElementById("patientType").value;
   const year = document.getElementById("yearSelect").value;
   const container = document.getElementById("tableContainer");
-  
+  container.innerHTML = `<span class="spinner"></span> กำลังโหลดข้อมูล...`;
+
   if(year === "2568"){
-    // โหลดจาก CSV
-    const url = csvLinks2568[type];
-    container.innerHTML = "⏳ กำลังโหลดข้อมูล...";
-    fetch(url)
-      .then(r => r.text())
-      .then(data => container.innerHTML = renderCSVtoTable(data))
+    if(type === "opd"){
+      // โหลด 2 ตาราง OPD
+      Promise.all([
+        fetch(csvLinks2568.opd_general).then(r=>r.text()),
+        fetch(csvLinks2568.opd_ncd).then(r=>r.text())
+      ])
+      .then(([generalCSV, ncdCSV])=>{
+        container.innerHTML =
+          renderCSVtoTable("OPD ทั่วไป", generalCSV) +
+          renderCSVtoTable("OPD NCD", ncdCSV);
+      })
       .catch(()=> container.innerHTML = "⚠️ โหลดข้อมูลไม่สำเร็จ");
+    } else {
+      // โหลด IPD
+      fetch(csvLinks2568.ipd)
+        .then(r=>r.text())
+        .then(csv => container.innerHTML = renderCSVtoTable("IPD", csv))
+        .catch(()=> container.innerHTML = "⚠️ โหลดข้อมูลไม่สำเร็จ");
+    }
   } else {
-    // โหลดจาก staticData
-    container.innerHTML = renderStaticTable(staticData[type][year]);
+    // Static data
+    container.innerHTML = renderTable(type.toUpperCase(), staticData[type][year]);
   }
 }
 
-// โหลดครั้งแรก
+// เรียกโหลดครั้งแรก
 loadTable();
 
-// เปลี่ยน dropdown
+// เมื่อ dropdown เปลี่ยนค่า
 document.getElementById("patientType").addEventListener("change", loadTable);
 document.getElementById("yearSelect").addEventListener("change", loadTable);
 </script>

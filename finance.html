@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สถานการณ์การเงิน - โรงพยาบาลจัตุรัส</title>
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #37c273, #b7e2c4);
+    color: #004d00;
+}
+header {
+    text-align: center;
+    padding: 20px;
+}
+h1 { margin-bottom: 5px; }
+p { margin-top: 0; font-size: 16px; }
+
+/* ตารางการเงิน */
+.table-container {
+    width: 95%;
+    margin: 20px auto;
+    overflow-x: auto;
+}
+.table-finance {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+.table-finance th, .table-finance td {
+    border: 1px solid #004d00;
+    padding: 10px 12px;
+    text-align: center;
+    font-size: 16px;
+}
+.table-finance th {
+    background-color: #037a32;
+    color: white;
+    font-weight: bold;
+}
+.table-finance tbody tr:nth-child(even) {
+    background-color: #e6f2e6;
+}
+.table-finance tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+.table-finance td:first-child {
+    font-weight: bold; /* เน้นชื่อรายการ */
+}
+
+/* ปุ่มกลับหน้าหลัก */
+.back-btn {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    padding: 12px 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    color: white;
+    background: linear-gradient(135deg, #037a32, #00aa55);
+    border-radius: 12px;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+.back-btn:hover {
+    background: linear-gradient(135deg, #0077cc, #00aaff);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>สถานการณ์การเงิน โรงพยาบาลจัตุรัส</h1>
+    <p>ข้อมูลสรุปงบประมาณและรายรับ-รายจ่าย ประจำเดือน/ปี</p>
+</header>
+
+<div class="table-container">
+    <div id="financeTable">กำลังโหลดข้อมูล...</div>
+</div>
+
+<a href="index.html" class="back-btn">กลับหน้าหลัก</a>
+
+<script>
+// URL CSV จาก Google Sheets
+const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS_F2ooFINMZFSb4ZYW7ViRSYwiz8KGTOt-iN6Fsgi-8C4VU6Qe7EcIzzTIwRJMnH6UqJ8KMbAZdAOH/pub?output=csv';
+
+fetch(csvUrl)
+    .then(response => response.text())
+    .then(csvText => {
+        const rows = csvText.trim().split('\n');
+        let html = '<table class="table-finance"><thead><tr>';
+        const headers = rows[0].split(',');
+        headers.forEach(header => html += `<th>${header}</th>`);
+        html += '</tr></thead><tbody>';
+        rows.slice(1).forEach(row => {
+            html += '<tr>';
+            row.split(',').forEach(cell => html += `<td>${cell}</td>`);
+            html += '</tr>';
+        });
+        html += '</tbody></table>';
+        document.getElementById('financeTable').innerHTML = html;
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById('financeTable').innerHTML = 'ไม่สามารถโหลดข้อมูลได้';
+    });
+</script>
+
+</body>
+</html>
