@@ -3,191 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>สถิติ Refer ผู้ป่วยแบบเลือกตาราง</title>
+<title>Refer Dashboard</title>
 <style>
 body {
     margin:0;
     font-family:sans-serif;
     background: linear-gradient(to right, rgb(55,194,115), rgb(183,226,196));
 }
-header {
-    text-align:center;
-    padding:30px 20px;
+header { text-align:center; padding:30px 20px; }
+main { padding:20px; max-width:1200px; margin:auto; }
+a.back { display:inline-block; margin-bottom:20px; color:navy; text-decoration:none; font-weight:bold; }
+.select-table { margin:20px 0; padding:10px; font-size:16px; }
+
+/* Grid สำหรับตาราง */
+.tables-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 20px;
 }
-main {
-    padding:20px;
-    max-width:1000px;
-    margin:auto;
+
+/* Card สำหรับแต่ละตาราง */
+.table-card {
     background-color: rgba(255,255,255,0.95);
-    border-radius:12px;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow-x: auto;
 }
-a.back {
-    display:inline-block;
-    margin-bottom:20px;
-    color:navy;
-    text-decoration:none;
-    font-weight:bold;
-}
+.table-card h2 { text-align:center; margin-top:0; }
 
-/* ตารางสไตล์ทันสมัย */
-table {
-    width:100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-th, td {
-    padding: 12px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-    transition: background 0.3s, transform 0.2s;
-}
-th {
-    background: linear-gradient(90deg, #4a90e2, #50e3c2);
-    color: #fff;
-    text-transform: uppercase;
-}
-tr:nth-child(even) {
-    background-color: rgba(0,0,0,0.03);
-}
-tr:hover {
-    background-color: rgba(79,209,197,0.15);
-    transform: scale(1.01);
-}
-tfoot td {
-    font-weight: bold;
-    background: linear-gradient(90deg, #1a365d, #2b6cb0);
-    color: #fff;
-}
+/* ตารางทั่วไป */
+table { width:100%; border-collapse: collapse; }
+th, td { padding: 12px; text-align:center; border-bottom:1px solid #ddd; transition: background 0.3s, transform 0.2s; }
+th { background: linear-gradient(90deg, #4a90e2, #50e3c2); color:#fff; text-transform: uppercase; }
+tr:hover { background-color: rgba(79,209,197,0.15); transform: scale(1.01); }
+tfoot td { font-weight: bold; background: linear-gradient(90deg, #1a365d, #2b6cb0); color: #fff; }
 
-/* responsive */
-@media (max-width:600px){
-    th, td{ padding:8px; font-size:14px; }
-}
+/* Zebra stripe */
+table tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
+table tr:nth-child(odd) { background-color: rgba(0,0,0,0.02); }
 
-/* dropdown */
-.select-table {
-    margin:20px 0;
-    padding:10px;
-    font-size:16px;
-}
+/* ไฮไลท์คอลัมน์ รพ. */
+table td.rp-column { font-weight:bold; font-size:16px; color:#1a365d; text-align:left; }
+
+@media (max-width:600px){ th, td{ padding:8px; font-size:14px; } }
 </style>
 </head>
 <body>
 <header>
-    <h1>สถิติ Refer ผู้ป่วย</h1>
+    <h1>Refer Dashboard</h1>
 </header>
 <main>
 <a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
 
 <label for="tableSelect">เลือกตาราง:</label>
 <select id="tableSelect" class="select-table">
-    <option value="opdOut">ผู้ป่วยนอก (OPD) Refer Out</option>
-    <option value="ipdOut">ผู้ป่วยใน (IPD) Refer Out</option>
-    <option value="ipdInDept">ผู้ป่วยใน (IPD) Refer In แยกแผนก</option>
-    <option value="ipdInHosp">IPD Refer In จากโรงพยาบาลลูกข่าย</option>
+    <option value="referOut">Refer Out</option>
+    <option value="referInBack">Refer In Refer Back</option>
+    <option value="top10OutOPD">10 อันดับ Refer Out ผู้ป่วยนอก</option>
+    <option value="top10OutIPD">10 อันดับ Refer Out ผู้ป่วยใน</option>
+    <option value="top10InBack">10 อันดับ Refer In+Back</option>
+    <option value="top10InNode">10 อันดับ Refer In Node</option>
+    <option value="referInHospBranch">Refer In ลูกข่ายแยกสาขา</option>
 </select>
 
-<!-- ตารางทั้งหมดซ่อน/แสดงตาม dropdown -->
-<div id="opdOut" class="table-container">
-<h2>ผู้ป่วยนอก (OPD) Refer Out แยกแผนก</h2>
-<table>
-    <thead>
-        <tr><th>แผนก</th><th>2566</th><th>2567</th><th>2568</th><th>รวมทั้งหมด</th></tr>
-    </thead>
-    <tbody>
-        <tr><td>อายุรกรรม</td><td>20</td><td>25</td><td>30</td><td>75</td></tr>
-        <tr><td>ศัลยกรรม</td><td>15</td><td>18</td><td>20</td><td>53</td></tr>
-        <tr><td>ศัลยกรรมกระดูกและข้อ</td><td>15</td><td>18</td><td>20</td><td>53</td></tr>
-        <tr><td>จักษุ</td><td>15</td><td>18</td><td>20</td><td>53</td></tr>
-        <tr><td>แม่และเด็ก</td><td>10</td><td>12</td><td>15</td><td>37</td></tr>
-        <tr><td>สูติ-นรีเวช</td><td>8</td><td>10</td><td>12</td><td>30</td></tr>
-        <tr><td>จิตเวช</td><td>5</td><td>6</td><td>7</td><td>18</td></tr>
-    </tbody>
-    <tfoot>
-        <tr><td>รวมทั้งหมด</td><td>58</td><td>71</td><td>84</td><td>213</td></tr>
-    </tfoot>
-</table>
+<div class="tables-grid">
+    <div id="referOut" class="table-card"><h2>Refer Out</h2><table><thead></thead><tbody></tbody></table></div>
+    <div id="referInBack" class="table-card" style="display:none;"><h2>Refer In Refer Back</h2><table><thead></thead><tbody></tbody></table></div>
+    <div id="top10OutOPD" class="table-card" style="display:none;"><h2>10 อันดับ Refer Out ผู้ป่วยนอก</h2><table><thead></thead><tbody></tbody></table></div>
+    <div id="top10OutIPD" class="table-card" style="display:none;"><h2>10 อันดับ Refer Out ผู้ป่วยใน</h2><table><thead></thead><tbody></tbody></table></div>
+    <div id="top10InBack" class="table-card" style="display:none;"><h2>10 อันดับ Refer In+Back</h2><table><thead></thead><tbody></tbody></table></div>
+    <div id="top10InNode" class="table-card" style="display:none;"><h2>10 อันดับ Refer In Node</h2><table><thead></thead><tbody></tbody></table></div>
+    <div id="referInHospBranch" class="table-card" style="display:none;"><h2>Refer In ลูกข่ายแยกสาขา</h2><table><thead></thead><tbody></tbody></table></div>
 </div>
 
-<div id="ipdOut" class="table-container" style="display:none;">
-<h2>ผู้ป่วยใน (IPD) Refer Out แยกแผนก</h2>
-<table>
-<thead>
-<tr><th>แผนก</th><th>2566</th><th>2567</th><th>2568</th><th>รวมทั้งหมด</th></tr>
-</thead>
-<tbody>
-<tr><td>อายุรกรรม</td><td>20</td><td>25</td><td>30</td><td>75</td></tr>
-<tr><td>ศัลยกรรม</td><td>15</td><td>18</td><td>20</td><td>53</td></tr>
-<tr><td>ศัลยกรรมกระดูกและข้อ</td><td>15</td><td>18</td><td>20</td><td>53</td></tr>
-<tr><td>จักษุ</td><td>15</td><td>18</td><td>20</td><td>53</td></tr>
-<tr><td>แม่และเด็ก</td><td>10</td><td>12</td><td>15</td><td>37</td></tr>
-<tr><td>สูติ-นรีเวช</td><td>8</td><td>10</td><td>12</td><td>30</td></tr>
-<tr><td>จิตเวช</td><td>5</td><td>6</td><td>7</td><td>18</td></tr>
-</tbody>
-<tfoot>
-<tr><td>รวมทั้งหมด</td><td>115</td><td>135</td><td>155</td><td>410</td></tr>
-</tfoot>
-</table>
-</div>
-
-<div id="ipdInDept" class="table-container" style="display:none;">
-<h2>ผู้ป่วยใน (IPD) Refer In แยกแผนก</h2>
-<table>
-<thead>
-<tr><th>แผนก</th><th>2566</th><th>2567</th><th>2568</th><th>รวมทั้งหมด</th></tr>
-</thead>
-<tbody>
-<tr><td>อายุรกรรม</td><td>25</td><td>30</td><td>35</td><td>90</td></tr>
-<tr><td>ศัลยกรรม</td><td>20</td><td>22</td><td>25</td><td>67</td></tr>
-<tr><td>ศัลยกรรมกระดูกและข้อ</td><td>18</td><td>20</td><td>22</td><td>60</td></tr>
-<tr><td>จักษุ</td><td>10</td><td>12</td><td>15</td><td>37</td></tr>
-<tr><td>แม่และเด็ก</td><td>12</td><td>15</td><td>18</td><td>45</td></tr>
-<tr><td>สูติ-นรีเวช</td><td>8</td><td>10</td><td>12</td><td>30</td></tr>
-<tr><td>จิตเวช</td><td>5</td><td>6</td><td>8</td><td>19</td></tr>
-</tbody>
-<tfoot>
-<tr><td>รวมทั้งหมด</td><td>98</td><td>115</td><td>135</td><td>348</td></tr>
-</tfoot>
-</table>
-</div>
-
-<div id="ipdInHosp" class="table-container" style="display:none;">
-<h2>IPD Refer In จากโรงพยาบาลลูกข่าย</h2>
-<table>
-<thead>
-<tr><th>โรงพยาบาลลูกข่าย</th><th>2566</th><th>2567</th><th>2568</th><th>รวมทั้งหมด</th></tr>
-</thead>
-<tbody>
-<tr><td>รพ.เทพสถิต</td><td>20</td><td>25</td><td>30</td><td>75</td></tr>
-<tr><td>รพ.บำเหน็จณรงค์</td><td>15</td><td>18</td><td>20</td><td>53</td></tr>
-<tr><td>รพ.ซับใหญ่</td><td>10</td><td>12</td><td>15</td><td>37</td></tr>
-<tr><td>รพ.เนินสง่า</td><td>8</td><td>10</td><td>12</td><td>30</td></tr>
-</tbody>
-<tfoot>
-<tr><td>รวมทั้งหมด</td><td>53</td><td>65</td><td>77</td><td>195</td></tr>
-</tfoot>
-</table>
-</div>
-
-</main>
-
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
+const sheetLinks = {
+    referOut: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1eN1MEqpkd7w5WLILIpUSIglAUMtWb8vPWL8YdQu-rtaK9QsAgCqQ3VR8ECtbKQyYt5Ujc5wtgPuA/pub?output=csv",
+    referInBack: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS845waYv-Ws4EvTQvUbARDYxs64HKhN1d_BFv36_wrmRY5nTJQrLKiMLQW8fEVDLFadUvQdqakhW0i/pub?output=csv",
+    top10OutOPD: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMUE4kT1n9oZWCX99oSUuFwfA-3zfOB9IdxrQ612GJSEp_nDBP9gbehZq2nFyk2dXNC0SLa4FWJ2db/pub?output=csv",
+    top10OutIPD: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSweVDQKy-fl0Hy0CK1ogoNtQrJGbM0BT_a2IkM-l2LNhlrGFpzSPrdyadm0B2gqk1W0Qq4E3cfeqfm/pub?output=csv",
+    top10InBack: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsMJjDJikonT4uOqn_l6xmsY9Mvfkcy1YWNHj2ihd7MtNhsHj9dgCW3OI2NOW7UjPKKjB8S4d9rsrw/pub?output=csv",
+    top10InNode: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSi7XoxLmlLH6Oj_ZDqANsf6Do7svF1iRmJ9eQeAyvPRZtOTf3bEoPFZx9c2_dMmas0ojBu8v5SKJss/pub?output=csv",
+    referInHospBranch: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRGINKGg7UiFst0q7vm5X1wLBl3gzSApQ5Izh2BC8dvwCjs8yrjrrNjIvEJxGBzMsrKlcyKm6_uH1vA/pub?output=csv"
+};
+
+async function loadTableWithRpHighlight(tableId) {
+    const url = sheetLinks[tableId];
+    if(!url) return;
+    const res = await fetch(url);
+    const text = await res.text();
+    const data = Papa.parse(text.trim(), { header: true }).data;
+
+    const tableDiv = document.getElementById(tableId);
+    const table = tableDiv.querySelector("table");
+    const thead = table.querySelector("thead");
+    const tbody = table.querySelector("tbody");
+    if(!data.length) return;
+
+    const headers = Object.keys(data[0]);
+    thead.innerHTML = "<tr>" + headers.map(h => `<th>${h}</th>`).join("") + "</tr>";
+
+    tbody.innerHTML = data.map(row => {
+        return "<tr>" + headers.map(h => {
+            if(h === "รพ.") return `<td class="rp-column">${row[h] || ""}</td>`;
+            return `<td>${row[h] || ""}</td>`;
+        }).join("") + "</tr>";
+    }).join("");
+}
+
+// โหลดทุกตาราง
+Object.keys(sheetLinks).forEach(id => loadTableWithRpHighlight(id));
+
+// Dropdown
 const select = document.getElementById("tableSelect");
-const tables = document.querySelectorAll(".table-container");
-
+const tables = document.querySelectorAll(".table-card");
 select.addEventListener("change", function() {
-    tables.forEach(t => t.style.display = "none"); // ซ่อนทุกตาราง
-    const id = this.value;
-    const selected = document.getElementById(id);
-    if(selected) selected.style.display = "block"; // แสดงตารางที่เลือก
+    tables.forEach(t => t.style.display = "none");
+    const selected = document.getElementById(this.value);
+    if(selected) selected.style.display = "block";
 });
-
-// แสดงตารางแรกตั้งต้น
+// แสดงเริ่มต้น
 tables.forEach(t => t.style.display = "none");
 document.getElementById(select.value).style.display = "block";
 </script>
+</main>
 </body>
 </html>
