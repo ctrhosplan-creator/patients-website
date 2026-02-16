@@ -16,8 +16,6 @@ th { background-color: rgb(4,44,24); color:white; }
 tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
 a.back { display:inline-block; margin-bottom:15px; text-decoration:none; color:white; background:rgb(4,44,24); padding:8px 16px; border-radius:6px; }
 a.back:hover { background:rgb(22,90,50); }
-#tableContainer table { animation: fadeIn 0.4s ease; }
-@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 .spinner {
   border: 4px solid rgba(0,0,0,0.1);
   width: 36px;
@@ -26,7 +24,6 @@ a.back:hover { background:rgb(22,90,50); }
   border-left-color: #333;
   animation: spin 1s linear infinite;
   display:inline-block;
-  vertical-align: middle;
 }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 </style>
@@ -36,20 +33,20 @@ a.back:hover { background:rgb(22,90,50); }
 <h1>อันดับ 5 โรคผู้ป่วย</h1>
 </header>
 <main>
-<a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
 
 <div style="margin-bottom:20px;">
-  <label for="patientType">เลือกประเภทผู้ป่วย:</label>
+  <label>เลือกประเภทผู้ป่วย:</label>
   <select id="patientType">
     <option value="opd">ผู้ป่วยนอก (OPD)</option>
     <option value="ipd">ผู้ป่วยใน (IPD)</option>
   </select>
 
-  <label for="yearSelect">เลือกปี:</label>
+  <label>เลือกปี:</label>
   <select id="yearSelect">
     <option value="2566">2566</option>
     <option value="2567">2567</option>
-    <option value="2568" selected>2568</option>
+    <option value="2568">2568</option>
+    <option value="2569" selected>2569</option>
   </select>
 </div>
 
@@ -57,128 +54,108 @@ a.back:hover { background:rgb(22,90,50); }
   <span class="spinner"></span> กำลังโหลดข้อมูล...
 </div>
 
-<!-- PapaParse -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
-// ====== Static Data ======
+
+// ===== Static Data 2566-2567 =====
 const staticData = {
   opd: {
-    "2566": [
-      ["HT","5099"],
-      ["DM","4173"],
-      ["URI","3193"],
-      ["Covid-19","1281"],
-      ["Dyspepsia","1101"]
-    ],
-    "2567": [
-      ["CKD5","14810"],
-      ["HT","11922"],
-      ["DM","11370"],
-      ["Dyspepsia","2935"],
-      ["URI","2786"]
-    ]
+    "2566": [["HT","5099"],["DM","4173"],["URI","3193"],["Covid-19","1281"],["Dyspepsia","1101"]],
+    "2567": [["CKD5","14810"],["HT","11922"],["DM","11370"],["Dyspepsia","2935"],["URI","2786"]]
   },
   ipd: {
-    "2566": [
-      ["Pneumonia","103"],
-      ["Head Injury","93"],
-      ["COPD","55"],
-      ["AGE","54"],
-      ["CHF","50"]
-    ],
-    "2567": [
-      ["Pneumonia","416"],
-      ["Sepsis","377"],
-      ["Senile cataract","311"],
-      ["Stroke","229"],
-      ["Intracranail injury","211"]
-    ]
+    "2566": [["Pneumonia","103"],["Head Injury","93"],["COPD","55"],["AGE","54"],["CHF","50"]],
+    "2567": [["Pneumonia","416"],["Sepsis","377"],["Senile cataract","311"],["Stroke","229"],["Intracranail injury","211"]]
   }
 };
 
-// ====== CSV Links ปี 2568 ======
+// ===== CSV Links 2568 =====
 const csvLinks2568 = {
   opd_general: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfILYO-grwMvz_XxbBiMtN0xxVdz8_SNy0hWPt3UTdW5u0PvXGI2f96TKn-cuJ_3yuVlnL9mzWXjGv/pub?gid=0&single=true&output=csv",
   opd_ncd: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1JyYvEW-GNlsmuIWS3mQ-QYzBRxstG4L90m_egN0UG61ZaCcyTaWQTfU4wkIWZZj8xpxK8u6mpgMX/pub?output=csv",
   ipd: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRguUkbI1WPemYRAI7QCJMgX9Tbvw961umVNShBwROZlWDT0GbxQy3IqMd4dZAZmcnEE4jMyOkhwMp/pub?gid=0&single=true&output=csv"
 };
 
-// ====== สร้าง HTML Table ======
+// ===== CSV Links 2569 =====
+const csvLinks2569 = {
+  opd_general: "https://docs.google.com/spreadsheets/d/1-rZbUfkwik5EHhcfgvoNSRiSEG2MOIa0MGavp43NmwA/export?format=csv&gid=488560581",
+  opd_ncd: "https://docs.google.com/spreadsheets/d/1wkp0VviNYL5Px3J1HcGXjwQww_94SbTnrg-bKSieJok/export?format=csv&gid=35166701",
+  ipd: "https://docs.google.com/spreadsheets/d/18JECKhf5NdqVzaIm5S5EkZA65SucVqsfvWfNI_4A8sY/export?format=csv&gid=43267423"
+};
+
+// ===== Cache =====
+const cache = {};
+function fetchCSV(url){
+  if(cache[url]) return Promise.resolve(cache[url]);
+  return fetch(url)
+    .then(r=>r.text())
+    .then(text=>{
+      cache[url]=text;
+      return text;
+    });
+}
+
+// ===== Render Table =====
 function renderTable(title, rows){
-  let html = `<h3 style="margin-top:25px;">${title}</h3>`;
-  html += `<table>
-             <thead>
-               <tr>
-                 <th>อันดับ</th>
-                 <th>ชื่อโรค</th>
-                 <th>จำนวนผู้ป่วย</th>
-               </tr>
-             </thead>
-             <tbody>`;
+  let html = `<h3>${title}</h3><table><thead><tr>
+              <th>อันดับ</th><th>ชื่อโรค</th><th>จำนวนผู้ป่วย</th>
+              </tr></thead><tbody>`;
   rows.forEach((r,i)=>{
-    html += `<tr>
-               <td>${i+1}</td>
-               <td>${r[0]}</td>
-               <td>${Number(r[1]).toLocaleString()}</td>
-             </tr>`;
+    html += `<tr><td>${i+1}</td><td>${r[0]}</td>
+             <td>${Number(r[1]).toLocaleString()}</td></tr>`;
   });
-  html += `</tbody></table>`;
+  html += "</tbody></table>";
   return html;
 }
 
-// ====== แปลง CSV → Table ด้วย PapaParse และเลือก 5 อันดับ ======
 function renderCSVtoTable(title, csvText){
   const parsed = Papa.parse(csvText, {header:true, skipEmptyLines:true});
-  let rows = parsed.data.map(r => [r['ชื่อโรค'] || r['Disease'] || r[Object.keys(r)[1]], 
-                                   r['จำนวนผู้ป่วย'] || r['Count'] || r[Object.keys(r)[2]]]);
-  // ลบ row ที่ไม่มีข้อมูล
+  let rows = parsed.data.map(r => [
+    r['ชื่อโรค'] || r['Disease'] || r[Object.keys(r)[1]],
+    r['จำนวนผู้ป่วย'] || r['Count'] || r[Object.keys(r)[2]]
+  ]);
   rows = rows.filter(r=>r[0] && r[1]);
-  // แปลงจำนวนเป็นตัวเลขและ sort ลดหลั่น
   rows = rows.map(r=>[r[0], Number(r[1].toString().replace(/,/g,''))])
              .sort((a,b)=>b[1]-a[1])
-             .slice(0,5); // เอา 5 อันดับแรก
+             .slice(0,5);
   return renderTable(title, rows);
 }
 
-// ====== โหลดข้อมูล ======
+// ===== Load Data =====
 function loadTable(){
   const type = document.getElementById("patientType").value;
   const year = document.getElementById("yearSelect").value;
   const container = document.getElementById("tableContainer");
   container.innerHTML = `<span class="spinner"></span> กำลังโหลดข้อมูล...`;
 
-  if(year === "2568"){
+  if(year === "2568" || year === "2569"){
+    const links = year === "2568" ? csvLinks2568 : csvLinks2569;
+
     if(type === "opd"){
-      // โหลด 2 ตาราง OPD
       Promise.all([
-        fetch(csvLinks2568.opd_general).then(r=>r.text()),
-        fetch(csvLinks2568.opd_ncd).then(r=>r.text())
+        fetchCSV(links.opd_general),
+        fetchCSV(links.opd_ncd)
       ])
       .then(([generalCSV, ncdCSV])=>{
         container.innerHTML =
           renderCSVtoTable("OPD ทั่วไป", generalCSV) +
           renderCSVtoTable("OPD NCD", ncdCSV);
       })
-      .catch(()=> container.innerHTML = "⚠️ โหลดข้อมูลไม่สำเร็จ");
+      .catch(()=> container.innerHTML="⚠️ โหลดข้อมูลไม่สำเร็จ");
     } else {
-      // โหลด IPD
-      fetch(csvLinks2568.ipd)
-        .then(r=>r.text())
-        .then(csv => container.innerHTML = renderCSVtoTable("IPD", csv))
-        .catch(()=> container.innerHTML = "⚠️ โหลดข้อมูลไม่สำเร็จ");
+      fetchCSV(links.ipd)
+        .then(csv=> container.innerHTML=renderCSVtoTable("IPD", csv))
+        .catch(()=> container.innerHTML="⚠️ โหลดข้อมูลไม่สำเร็จ");
     }
   } else {
-    // Static data
     container.innerHTML = renderTable(type.toUpperCase(), staticData[type][year]);
   }
 }
 
-// เรียกโหลดครั้งแรก
 loadTable();
-
-// เมื่อ dropdown เปลี่ยนค่า
 document.getElementById("patientType").addEventListener("change", loadTable);
 document.getElementById("yearSelect").addEventListener("change", loadTable);
+
 </script>
 </main>
 </body>

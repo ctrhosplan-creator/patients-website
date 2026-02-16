@@ -43,8 +43,17 @@ tfoot td { font-weight: bold; background: linear-gradient(90deg, #1a365d, #2b6cb
 table tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
 table tr:nth-child(odd) { background-color: rgba(0,0,0,0.02); }
 
-/* ไฮไลท์คอลัมน์ รพ. */
-table td.rp-column { font-weight:bold; font-size:16px; color:#1a365d; text-align:left; }
+/* ไฮไลท์คอลัมน์ รพ. และ sticky */
+table td.rp-column {
+    font-weight:bold;
+    font-size:16px;
+    color:#1a365d;
+    text-align:left;
+    position: sticky;
+    left: 0;
+    background-color: rgba(255,255,255,0.95);
+    z-index: 1;
+}
 
 @media (max-width:600px){ th, td{ padding:8px; font-size:14px; } }
 </style>
@@ -92,38 +101,54 @@ const sheetLinks = {
 async function loadTableWithRpHighlight(tableId) {
     const url = sheetLinks[tableId];
     if(!url) return;
-    const res = await fetch(url);
-    const text = await res.text();
-    const data = Papa.parse(text.trim(), { header: true }).data;
 
-    const tableDiv = document.getElementById(tableId);
-    const table = tableDiv.querySelector("table");
-    const thead = table.querySelector("thead");
-    const tbody = table.querySelector("tbody");
-    if(!data.length) return;
+    try {
+        const res = await fetch(url + "&cachebust=" + new Date().getTime()); // ป้องกัน cache
+        const text = await res.text();
+        const data = Papa.parse(text.trim(), { header: true }).data;
 
-    const headers = Object.keys(data[0]);
-    thead.innerHTML = "<tr>" + headers.map(h => `<th>${h}</th>`).join("") + "</tr>";
+        const tableDiv = document.getElementById(tableId);
+        const table = tableDiv.querySelector("table");
+        const thead = table.querySelector("thead");
+        const tbody = table.querySelector("tbody");
+        if(!data.length) {
+            tbody.innerHTML = "<tr><td colspan='100%'>ไม่มีข้อมูล</td></tr>";
+            return;
+        }
 
-    tbody.innerHTML = data.map(row => {
-        return "<tr>" + headers.map(h => {
-            if(h === "รพ.") return `<td class="rp-column">${row[h] || ""}</td>`;
-            return `<td>${row[h] || ""}</td>`;
-        }).join("") + "</tr>";
-    }).join("");
+        const headers = Object.keys(data[0]);
+        thead.innerHTML = "<tr>" + headers.map(h => `<th>${h}</th>`).join("") + "</tr>";
+
+        tbody.innerHTML = data.map(row => {
+            return "<tr>" + headers.map(h => {
+                if(h === "รพ.") return `<td class="rp-column">${row[h] || ""}</td>`;
+                return `<td>${row[h] || ""}</td>`;
+            }).join("") + "</tr>";
+        }).join("");
+    } catch (err) {
+        console.error("โหลดตารางผิดพลาด:", tableId, err);
+    }
 }
 
-// โหลดทุกตาราง
+// โหลดตอนเริ่มต้น
 Object.keys(sheetLinks).forEach(id => loadTableWithRpHighlight(id));
 
-// Dropdown
+// อัปเดตทุก 30 วินาที
+setInterval(() => {
+    const selectedId = document.getElementById("tableSelect").value;
+    loadTableWithRpHighlight(selectedId);
+}, 30000);
+
+// Dropdown เลือกตาราง
 const select = document.getElementById("tableSelect");
 const tables = document.querySelectorAll(".table-card");
-select.addEventListener("change", function() {
+select.addEventListener("change", async function() {
     tables.forEach(t => t.style.display = "none");
     const selected = document.getElementById(this.value);
     if(selected) selected.style.display = "block";
+    await loadTableWithRpHighlight(this.value); // โหลดทันที
 });
+
 // แสดงเริ่มต้น
 tables.forEach(t => t.style.display = "none");
 document.getElementById(select.value).style.display = "block";
