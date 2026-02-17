@@ -2,161 +2,252 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>อันดับ 5 โรคผู้ป่วย</title>
+<title>รายงานสถิติโรค</title>
+
 <style>
-body { margin:0; font-family:sans-serif; background: linear-gradient(to right, rgb(55,194,115), rgb(183,226,196)); }
-header { text-align:center; padding:30px 20px; }
-main { padding:20px; max-width:900px; margin:auto; background-color: rgba(255,255,255,0.9); border-radius:12px; }
-label { font-weight:bold; margin-right:10px; }
-select { padding:6px 10px; border-radius:6px; border:1px solid #333; margin-right:10px; }
-table { width:100%; border-collapse: collapse; margin-top:15px; display:block; overflow-x:auto; }
-th, td { padding:12px; text-align:center; border:1px solid #333; white-space: nowrap; }
-th { background-color: rgb(4,44,24); color:white; }
-tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
-a.back { display:inline-block; margin-bottom:15px; text-decoration:none; color:white; background:rgb(4,44,24); padding:8px 16px; border-radius:6px; }
-a.back:hover { background:rgb(22,90,50); }
-.spinner {
-  border: 4px solid rgba(0,0,0,0.1);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border-left-color: #333;
-  animation: spin 1s linear infinite;
-  display:inline-block;
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f4f6f9;
 }
-@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* HEADER */
+header{
+    position:relative;
+    background:#1a365d;
+    color:white;
+    padding:20px 0;
+    text-align:center;
+}
+
+header h1{
+    margin:0;
+    font-size:22px;
+}
+
+.home-btn{
+    position:absolute;
+    left:20px;
+    top:50%;
+    transform:translateY(-50%);
+    background:white;
+    color:#1a365d;
+    padding:8px 18px;
+    border-radius:30px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+/* CONTENT */
+main{
+    max-width:1100px;
+    margin:30px auto;
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+select{
+    padding:8px 12px;
+    margin-bottom:20px;
+    font-size:14px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th, td{
+    padding:10px;
+    border:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background:#1a365d;
+    color:white;
+}
+
+tfoot{
+    font-weight:bold;
+    background:#edf2f7;
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>อันดับ 5 โรคผู้ป่วย</h1>
+    <a href="index.html" class="home-btn">← กลับหน้าหลัก</a>
+    <h1>รายงานสถิติโรค OPD / IPD / OPD NCD</h1>
 </header>
+
 <main>
 
-<div style="margin-bottom:20px;">
-  <label>เลือกประเภทผู้ป่วย:</label>
-  <select id="patientType">
-    <option value="opd">ผู้ป่วยนอก (OPD)</option>
-    <option value="ipd">ผู้ป่วยใน (IPD)</option>
-  </select>
+<select id="typeSelect">
+    <option value="opd">OPD</option>
+    <option value="ipd">IPD</option>
+    <option value="opdncd">OPD NCD</option>
+</select>
 
-  <label>เลือกปี:</label>
-  <select id="yearSelect">
-    <option value="2566">2566</option>
-    <option value="2567">2567</option>
-    <option value="2568">2568</option>
-    <option value="2569" selected>2569</option>
-  </select>
-</div>
+<table>
+<thead>
+<tr>
+<th>โรค</th>
+<th>2566</th>
+<th>2567</th>
+<th>2568</th>
+<th>2569</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+<tfoot id="tableFoot"></tfoot>
+</table>
 
-<div id="tableContainer">
-  <span class="spinner"></span> กำลังโหลดข้อมูล...
-</div>
+</main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
 
-// ===== Static Data 2566-2567 =====
+/* ===============================
+   CONFIG SHEET LINKS
+================================ */
+
+const sheetLinks = {
+opd:{
+"2568":"https://docs.google.com/spreadsheets/d/1-rZbUfkwik5EHhcfgvoNSRiSEG2MOIa0MGavp43NmwA/export?format=csv&gid=0",
+"2569":"https://docs.google.com/spreadsheets/d/1-rZbUfkwik5EHhcfgvoNSRiSEG2MOIa0MGavp43NmwA/export?format=csv&gid=488560581"
+},
+ipd:{
+"2568":"https://docs.google.com/spreadsheets/d/1-rZbUfkwik5EHhcfgvoNSRiSEG2MOIa0MGavp43NmwA/export?format=csv&gid=1916936800",
+"2569":"https://docs.google.com/spreadsheets/d/1-rZbUfkwik5EHhcfgvoNSRiSEG2MOIa0MGavp43NmwA/export?format=csv&gid=231700754"
+},
+opdncd:{
+"2568":"https://docs.google.com/spreadsheets/d/1-rZbUfkwik5EHhcfgvoNSRiSEG2MOIa0MGavp43NmwA/export?format=csv&gid=1095088288",
+"2569":"https://docs.google.com/spreadsheets/d/1-rZbUfkwik5EHhcfgvoNSRiSEG2MOIa0MGavp43NmwA/export?format=csv&gid=249677779"
+}
+};
+
+/* ===============================
+   STATIC DATA
+================================ */
+
 const staticData = {
-  opd: {
-    "2566": [["HT","5099"],["DM","4173"],["URI","3193"],["Covid-19","1281"],["Dyspepsia","1101"]],
-    "2567": [["CKD5","14810"],["HT","11922"],["DM","11370"],["Dyspepsia","2935"],["URI","2786"]]
-  },
-  ipd: {
-    "2566": [["Pneumonia","103"],["Head Injury","93"],["COPD","55"],["AGE","54"],["CHF","50"]],
-    "2567": [["Pneumonia","416"],["Sepsis","377"],["Senile cataract","311"],["Stroke","229"],["Intracranail injury","211"]]
-  }
+opd:{
+"2566":{},
+"2567":{}
+},
+ipd:{
+"2566":{
+"Pneumonia":103,
+"Head Injury":93,
+"COPD":55,
+"AGE":54,
+"CHF":50
+},
+"2567":{
+"Pneumonia":416,
+"Sepsis":377,
+"Senile cataract":311,
+"Stroke":229,
+"Intracranail injury":211
+}
+},
+opdncd:{
+"2566":{"DM":0,"HT":0,"Dyslipidemia":0,"Asthma":0,"COPD":0},
+"2567":{"DM":0,"HT":0,"Dyslipidemia":0,"Asthma":0,"COPD":0}
+}
 };
 
-// ===== CSV Links 2568 =====
-const csvLinks2568 = {
-  opd_general: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfILYO-grwMvz_XxbBiMtN0xxVdz8_SNy0hWPt3UTdW5u0PvXGI2f96TKn-cuJ_3yuVlnL9mzWXjGv/pub?gid=0&single=true&output=csv",
-  opd_ncd: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1JyYvEW-GNlsmuIWS3mQ-QYzBRxstG4L90m_egN0UG61ZaCcyTaWQTfU4wkIWZZj8xpxK8u6mpgMX/pub?output=csv",
-  ipd: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRguUkbI1WPemYRAI7QCJMgX9Tbvw961umVNShBwROZlWDT0GbxQy3IqMd4dZAZmcnEE4jMyOkhwMp/pub?gid=0&single=true&output=csv"
-};
+/* ===============================
+   FIXED LOAD CSV (แก้ปัญหา 0)
+================================ */
 
-// ===== CSV Links 2569 =====
-const csvLinks2569 = {
-  opd_general: "https://docs.google.com/spreadsheets/d/1-rZbUfkwik5EHhcfgvoNSRiSEG2MOIa0MGavp43NmwA/export?format=csv&gid=488560581",
-  opd_ncd: "https://docs.google.com/spreadsheets/d/1wkp0VviNYL5Px3J1HcGXjwQww_94SbTnrg-bKSieJok/export?format=csv&gid=35166701",
-  ipd: "https://docs.google.com/spreadsheets/d/18JECKhf5NdqVzaIm5S5EkZA65SucVqsfvWfNI_4A8sY/export?format=csv&gid=43267423"
-};
+async function loadCSV(url){
+    try{
+        const res = await fetch(url);
+        const text = await res.text();
+        const rows = text.split(/\r?\n/);
+        const data = {};
 
-// ===== Cache =====
-const cache = {};
-function fetchCSV(url){
-  if(cache[url]) return Promise.resolve(cache[url]);
-  return fetch(url)
-    .then(r=>r.text())
-    .then(text=>{
-      cache[url]=text;
-      return text;
-    });
-}
+        for(let i=1; i<rows.length; i++){
+            if(!rows[i]) continue;
 
-// ===== Render Table =====
-function renderTable(title, rows){
-  let html = `<h3>${title}</h3><table><thead><tr>
-              <th>อันดับ</th><th>ชื่อโรค</th><th>จำนวนผู้ป่วย</th>
-              </tr></thead><tbody>`;
-  rows.forEach((r,i)=>{
-    html += `<tr><td>${i+1}</td><td>${r[0]}</td>
-             <td>${Number(r[1]).toLocaleString()}</td></tr>`;
-  });
-  html += "</tbody></table>";
-  return html;
-}
+            const cols = rows[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+            if(!cols || cols.length < 3) continue;
 
-function renderCSVtoTable(title, csvText){
-  const parsed = Papa.parse(csvText, {header:true, skipEmptyLines:true});
-  let rows = parsed.data.map(r => [
-    r['ชื่อโรค'] || r['Disease'] || r[Object.keys(r)[1]],
-    r['จำนวนผู้ป่วย'] || r['Count'] || r[Object.keys(r)[2]]
-  ]);
-  rows = rows.filter(r=>r[0] && r[1]);
-  rows = rows.map(r=>[r[0], Number(r[1].toString().replace(/,/g,''))])
-             .sort((a,b)=>b[1]-a[1])
-             .slice(0,5);
-  return renderTable(title, rows);
-}
+            const disease = cols[1].replace(/"/g,"").trim();
+            const count = parseInt(cols[2].replace(/"/g,"").trim());
 
-// ===== Load Data =====
-function loadTable(){
-  const type = document.getElementById("patientType").value;
-  const year = document.getElementById("yearSelect").value;
-  const container = document.getElementById("tableContainer");
-  container.innerHTML = `<span class="spinner"></span> กำลังโหลดข้อมูล...`;
+            if(disease && !isNaN(count)){
+                data[disease] = count;
+            }
+        }
 
-  if(year === "2568" || year === "2569"){
-    const links = year === "2568" ? csvLinks2568 : csvLinks2569;
+        return data;
 
-    if(type === "opd"){
-      Promise.all([
-        fetchCSV(links.opd_general),
-        fetchCSV(links.opd_ncd)
-      ])
-      .then(([generalCSV, ncdCSV])=>{
-        container.innerHTML =
-          renderCSVtoTable("OPD ทั่วไป", generalCSV) +
-          renderCSVtoTable("OPD NCD", ncdCSV);
-      })
-      .catch(()=> container.innerHTML="⚠️ โหลดข้อมูลไม่สำเร็จ");
-    } else {
-      fetchCSV(links.ipd)
-        .then(csv=> container.innerHTML=renderCSVtoTable("IPD", csv))
-        .catch(()=> container.innerHTML="⚠️ โหลดข้อมูลไม่สำเร็จ");
+    }catch(e){
+        console.log("โหลด CSV ไม่สำเร็จ:", e);
+        return {};
     }
-  } else {
-    container.innerHTML = renderTable(type.toUpperCase(), staticData[type][year]);
-  }
 }
 
-loadTable();
-document.getElementById("patientType").addEventListener("change", loadTable);
-document.getElementById("yearSelect").addEventListener("change", loadTable);
+/* ===============================
+   BUILD TABLE
+================================ */
+
+async function buildTable(type){
+
+const years=["2566","2567","2568","2569"];
+let allData={...staticData[type]};
+
+for(let y of ["2568","2569"]){
+    if(sheetLinks[type][y]){
+        allData[y]=await loadCSV(sheetLinks[type][y]);
+    }
+}
+
+const diseases = new Set();
+years.forEach(y=>{
+    Object.keys(allData[y]||{}).forEach(d=>diseases.add(d));
+});
+
+const body=document.getElementById("tableBody");
+const foot=document.getElementById("tableFoot");
+body.innerHTML="";
+foot.innerHTML="";
+
+let totals={"2566":0,"2567":0,"2568":0,"2569":0};
+
+diseases.forEach(d=>{
+    let row="<tr><td>"+d+"</td>";
+    years.forEach(y=>{
+        let val=allData[y]?.[d]||0;
+        totals[y]+=val;
+        row+="<td>"+val+"</td>";
+    });
+    row+="</tr>";
+    body.innerHTML+=row;
+});
+
+let totalRow="<tr><td>รวม</td>";
+years.forEach(y=>{
+    totalRow+="<td>"+totals[y]+"</td>";
+});
+totalRow+="</tr>";
+foot.innerHTML=totalRow;
+
+}
+
+document.getElementById("typeSelect")
+.addEventListener("change",e=>{
+    buildTable(e.target.value);
+});
+
+buildTable("opd");
 
 </script>
-</main>
+
 </body>
 </html>

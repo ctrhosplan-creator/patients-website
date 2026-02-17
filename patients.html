@@ -3,160 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>จำนวนผู้ป่วย แยกรายแผนกและตึกย้อนหลัง 3 ปี</title>
+<title>Refer Dashboard</title>
+
 <style>
-body { 
-  margin:0; 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-  background: linear-gradient(to right, #37c273, #b7e2c4); 
+body {
+    margin:0;
+    font-family:sans-serif;
+    background: linear-gradient(to right, rgb(55,194,115), rgb(183,226,196));
 }
-header { 
-  text-align:center; 
-  padding:30px 20px; 
-  color:black;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-}
-main { 
-  padding:20px; 
-  max-width:1000px; 
-  margin:auto; 
-  background-color: rgba(255,255,255,0.97); 
-  border-radius:12px; 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-select { 
-  padding:6px 12px; 
-  border-radius:6px; 
-  border:1px solid #333; 
-  margin-right:10px; 
-  font-size: 16px;
-}
-table { 
-  width:100%; 
-  border-collapse: separate; 
-  border-spacing:0;
-  border-radius:12px; 
-  overflow:hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  font-size: 16px;
-}
-td, th { 
-  padding:12px; 
-  text-align:center; 
-  border:1px solid #ccc; 
+header { text-align:center; padding:30px 20px; }
+main { padding:20px; max-width:1200px; margin:auto; }
+a.back { display:inline-block; margin-bottom:20px; color:navy; text-decoration:none; font-weight:bold; }
+.select-table { margin:20px 0; padding:10px; font-size:16px; }
+
+/* Grid */
+.tables-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 20px;
 }
 
-/* gradient ใหม่สำหรับหัวตาราง */
-th { 
-  background: linear-gradient(90deg, #388E3C, #66BB6A); 
-  color:white; 
-  font-size: 17px;
-  text-transform: uppercase;
+/* Card */
+.table-card {
+    background-color: rgba(255,255,255,0.95);
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+.table-card h2 { text-align:center; margin-top:0; }
+
+/* Table */
+table { width:100%; border-collapse: collapse; }
+th, td {
+    padding: 12px;
+    text-align:center;
+    border-bottom:1px solid #ddd;
+    transition: background 0.3s, transform 0.2s;
+}
+th {
+    background: linear-gradient(90deg, #4a90e2, #50e3c2);
+    color:#fff;
+    text-transform: uppercase;
+}
+tr:hover {
+    background-color: rgba(79,209,197,0.15);
+    transform: scale(1.01);
+}
+tfoot td {
+    font-weight: bold;
+    background: linear-gradient(90deg, #1a365d, #2b6cb0);
+    color: #fff;
 }
 
-/* แถวสลับ gradient ใหม่ */
-tr:nth-child(odd) { 
-  background: linear-gradient(90deg, #E8F5E9, #C8E6C9); 
-}
-tr:nth-child(even) { 
-  background: linear-gradient(90deg, #F1F8E9, #DCEEDC); 
+/* Zebra */
+table tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
+table tr:nth-child(odd) { background-color: rgba(0,0,0,0.02); }
+
+/* Sticky column */
+table td.rp-column {
+    font-weight:bold;
+    font-size:16px;
+    color:#1a365d;
+    text-align:left;
+    position: sticky;
+    left: 0;
+    background-color: rgba(255,255,255,0.95);
+    z-index: 1;
 }
 
-/* Hover effect gradient */
-tr:hover { 
-  background: linear-gradient(90deg, #A5D6A7, #81C784); 
-  transition: background 0.3s;
-}
-
-/* Footer รวมทั้งหมด gradient */
-tr.highlight td { 
-  background: linear-gradient(90deg, #FFF59D, #FFE082); 
-  font-weight:bold; 
-  color:#000;
+@media (max-width:600px){
+    th, td{ padding:8px; font-size:14px; }
 }
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>จำนวนผู้ป่วย แยกรายแผนกและตึกย้อนหลัง 3 ปี</h1>
+    <h1>จำนวนผู้รับบริการ</h1>
 </header>
+
 <main>
-<a href="index.html" style="text-decoration:none; color:#2E7D32; font-weight:bold;">&larr; กลับหน้าหลัก</a>
 
-<div style="margin-bottom:20px;">
-  <label for="yearSelect">เลือกปี:</label>
-  <select id="yearSelect">
-    <option value="2566">2566</option>
-    <option value="2567">2567</option>
-    <option value="2568" selected>2568</option>
-  </select>
+<a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
 
-  <label for="summarySelect">แสดง:</label>
-  <select id="summarySelect">
-    <option value="opd_detail">OPD แยกแผนก</option>
-    <option value="ipd_detail">IPD แยกตึก</option>
-  </select>
+<label for="tableSelect">เลือกตาราง:</label>
+<select id="tableSelect" class="select-table">
+    <option value="OPD">OPD แยกแผนก</option>
+    <option value="IPD">IPD แยกตึก</option>
+</select>
+
+<div class="tables-grid">
+
+    <div id="OPD" class="table-card">
+        <h2>OPD แยกแผนก</h2>
+        <table>
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="IPD" class="table-card" style="display:none;">
+        <h2>IPD แยกตึก</h2>
+        <table>
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
 </div>
 
-<div id="tableContainer">⏳ กำลังโหลดข้อมูล...</div>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <script>
-// ข้อมูล OPD แยกแผนก
-const opdDepartments = ["อายุรกรรม","ศัลยกรรม","ศัลยกรรมกระดูกและข้อ","จักษุ","สูตินรีเวช","จิตเวช","ทันตกรรม","แผนกอื่นๆ"];
-const opdData = {
-  "2566": {"อายุรกรรม":{visits:92714},"ศัลยกรรม":{visits:13721},"ศัลยกรรมกระดูกและข้อ":{visits:235},"จักษุ":{visits:2839},"สูตินรีเวช":{visits:1851},"จิตเวช":{visits:4267},"ทันตกรรม":{visits:10063},"แผนกอื่นๆ":{visits:499}},
-  "2567": {"อายุรกรรม":{visits:92817},"ศัลยกรรม":{visits:13821},"ศัลยกรรมกระดูกและข้อ":{visits:3817},"จักษุ":{visits:5160},"สูตินรีเวช":{visits:2154},"จิตเวช":{visits:5752},"ทันตกรรม":{visits:11852},"แผนกอื่นๆ":{visits:44270}},
-  "2568": {"อายุรกรรม":{visits:89724},"ศัลยกรรม":{visits:12107},"ศัลยกรรมกระดูกและข้อ":{visits:4559},"จักษุ":{visits:4477},"สูตินรีเวช":{visits:2716},"จิตเวช":{visits:6948},"ทันตกรรม":{visits:11145},"แผนกอื่นๆ":{visits:41954}}
+const sheetLinks = {
+    OPD: "https://docs.google.com/spreadsheets/d/151W7OPC1rVzTdy7Z2hpmzwmu0JqOkz-KrIu7jHaFPnQ/export?format=csv&gid=977913402",
+    IPD: "https://docs.google.com/spreadsheets/d/151W7OPC1rVzTdy7Z2hpmzwmu0JqOkz-KrIu7jHaFPnQ/export?format=csv&gid=0",
 };
 
-// ข้อมูล IPD แยกตึก
-const ipdBuildings = ["ตึกแม่และเด็ก","ตึกผู้ป่วยชาย","ตึกผู้ป่วยหญิง","ตึก ICU","ตึกพิเศษ","ตึกคลอด","Homeward","ตึกอื่นๆ"];
-const ipdData = {
-  "2566": {"ตึกแม่และเด็ก":{visits:0},"ตึกผู้ป่วยชาย":{visits:2002},"ตึกผู้ป่วยหญิง":{visits:1982},"ตึก ICU":{visits:82},"ตึกพิเศษ":{visits:1178},"ตึกคลอด":{visits:272},"Homeward":{visits:33},"ตึกอื่นๆ":{visits:0}},
-  "2567": {"ตึกแม่และเด็ก":{visits:0},"ตึกผู้ป่วยชาย":{visits:2490},"ตึกผู้ป่วยหญิง":{visits:2390},"ตึก ICU":{visits:210},"ตึกพิเศษ":{visits:1039},"ตึกคลอด":{visits:309},"Homeward":{visits:137},"ตึกอื่นๆ":{visits:23}},
-  "2568": {"ตึกแม่และเด็ก":{visits:1136},"ตึกผู้ป่วยชาย":{visits:2311},"ตึกผู้ป่วยหญิง":{visits:2233},"ตึก ICU":{visits:213},"ตึกพิเศษ":{visits:109},"ตึกคลอด":{visits:141},"Homeward":{visits:235},"ตึกอื่นๆ":{visits:0}}
-};
+async function loadTableWithRpHighlight(tableId) {
+    const url = sheetLinks[tableId];
+    if(!url) return;
 
-// ฟังก์ชันสร้างตาราง
-function renderTable() {
-  const year = document.getElementById("yearSelect").value;
-  const summary = document.getElementById("summarySelect").value;
-  const container = document.getElementById("tableContainer");
-  container.innerHTML = "⏳ กำลังโหลดข้อมูล...";
+    try {
+        const res = await fetch(url + "&cachebust=" + new Date().getTime());
+        const text = await res.text();
+        const data = Papa.parse(text.trim(), { header: true }).data;
 
-  let html = "<table><thead><tr>";
+        const tableDiv = document.getElementById(tableId);
+        const table = tableDiv.querySelector("table");
+        const thead = table.querySelector("thead");
+        const tbody = table.querySelector("tbody");
 
-  if(summary === "opd_detail") {
-    html += "<th>แผนก</th><th>จำนวนครั้ง</th></tr></thead><tbody>";
-    let totalVisits = 0;
-    opdDepartments.forEach(dep => {
-      const d = opdData[year][dep];
-      totalVisits += d.visits;
-      html += `<tr><td>${dep}</td><td>${d.visits.toLocaleString()}</td></tr>`;
-    });
-    html += `<tr class="highlight"><td>รวมทั้งหมด</td><td>${totalVisits.toLocaleString()}</td></tr>`;
-  } else if(summary === "ipd_detail") {
-    html += "<th>ตึก</th><th>จำนวนครั้ง</th></tr></thead><tbody>";
-    let totalVisits = 0;
-    ipdBuildings.forEach(b => {
-      const d = ipdData[year][b];
-      totalVisits += d.visits;
-      html += `<tr><td>${b}</td><td>${d.visits.toLocaleString()}</td></tr>`;
-    });
-    html += `<tr class="highlight"><td>รวมทั้งหมด</td><td>${totalVisits.toLocaleString()}</td></tr>`;
-  }
+        if(!data.length || !data[0]) {
+            tbody.innerHTML = "<tr><td colspan='100%'>ไม่มีข้อมูล</td></tr>";
+            return;
+        }
 
-  html += "</tbody></table>";
-  container.innerHTML = html;
+        const headers = Object.keys(data[0]).filter(h => h.trim() !== "");
+
+        thead.innerHTML = "<tr>" +
+            headers.map(h => `<th>${h}</th>`).join("") +
+            "</tr>";
+
+        tbody.innerHTML = data.map(row => {
+            return "<tr>" +
+                headers.map(h => {
+                    if(h === "รพ.")
+                        return `<td class="rp-column">${row[h] || ""}</td>`;
+                    return `<td>${row[h] || ""}</td>`;
+                }).join("") +
+            "</tr>";
+        }).join("");
+
+    } catch (err) {
+        console.error("โหลดตารางผิดพลาด:", tableId, err);
+    }
 }
 
-// event listener
-document.getElementById("yearSelect").addEventListener("change", renderTable);
-document.getElementById("summarySelect").addEventListener("change", renderTable);
+// โหลดตอนเริ่มต้น
+Object.keys(sheetLinks).forEach(id => loadTableWithRpHighlight(id));
 
-// โหลดครั้งแรก
-renderTable();
+// รีเฟรชทุก 30 วินาที
+setInterval(() => {
+    const selectedId = document.getElementById("tableSelect").value;
+    loadTableWithRpHighlight(selectedId);
+}, 30000);
+
+// Dropdown
+const select = document.getElementById("tableSelect");
+const tables = document.querySelectorAll(".table-card");
+
+select.addEventListener("change", async function() {
+    tables.forEach(t => t.style.display = "none");
+    const selected = document.getElementById(this.value);
+    if(selected) selected.style.display = "block";
+    await loadTableWithRpHighlight(this.value);
+});
+
+// แสดงเริ่มต้น
+tables.forEach(t => t.style.display = "none");
+document.getElementById(select.value).style.display = "block";
+
 </script>
+
 </main>
 </body>
 </html>

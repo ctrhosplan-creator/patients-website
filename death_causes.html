@@ -4,24 +4,62 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>5 อันดับสาเหตุการเสียชีวิตรายปี</title>
+
 <style>
-body { margin:0; font-family:sans-serif; background: linear-gradient(to right, rgb(55,194,115), rgb(183,226,196)); }
+body { 
+  margin:0; 
+  font-family:sans-serif; 
+  background: linear-gradient(to right, rgb(55,194,115), rgb(183,226,196)); 
+}
 header { text-align:center; padding:30px 20px; }
-main { padding:20px; max-width:900px; margin:auto; background-color: rgba(255,255,255,0.9); border-radius:12px; }
-a.back { display:inline-block; margin-bottom:20px; color:navy; text-decoration:none; font-weight:bold; }
+main { 
+  padding:20px; 
+  max-width:900px; 
+  margin:auto; 
+  background-color: rgba(255,255,255,0.9); 
+  border-radius:12px; 
+}
+a.back { 
+  display:inline-block; 
+  margin-bottom:20px; 
+  color:navy; 
+  text-decoration:none; 
+  font-weight:bold; 
+}
 label { font-weight:bold; margin-right:10px; }
-select { padding:6px 10px; border-radius:6px; border:1px solid #333; }
-table { width:100%; border-collapse: collapse; margin-top:15px; }
-th, td { padding:12px; text-align:center; border:1px solid #333; }
-th { background-color: rgb(4,44,24); color:white; }
-tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
+select { 
+  padding:6px 10px; 
+  border-radius:6px; 
+  border:1px solid #333; 
+}
+table { 
+  width:100%; 
+  border-collapse: collapse; 
+  margin-top:15px; 
+}
+th, td { 
+  padding:12px; 
+  text-align:center; 
+  border:1px solid #333; 
+}
+th { 
+  background-color: rgb(4,44,24); 
+  color:white; 
+}
+tr:nth-child(even) { 
+  background-color: rgba(0,0,0,0.05); 
+}
 </style>
 </head>
+
 <body>
+
 <header>
     <h1>5 อันดับสาเหตุการเสียชีวิตรายปี</h1>
 </header>
+
 <main>
+
 <a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
 
 <div style="margin-bottom:20px;">
@@ -30,13 +68,21 @@ tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
     <option value="y2566">2566</option>
     <option value="y2567">2567</option>
     <option value="y2568" selected>2568</option>
+    <option value="y2569">2569</option>
   </select>
 </div>
 
+<!-- ปี 2566 -->
 <div id="y2566" class="yearTable" style="display:none;">
 <h2>ปี 2566</h2>
 <table>
-<thead><tr><th>อันดับ</th><th>สาเหตุการเสียชีวิต</th><th>จำนวนผู้เสียชีวิต</th></tr></thead>
+<thead>
+<tr>
+<th>อันดับ</th>
+<th>สาเหตุการเสียชีวิต</th>
+<th>จำนวนผู้เสียชีวิต</th>
+</tr>
+</thead>
 <tbody>
 <tr><td>1</td><td>ตายไม่ทราบสาเหตุ</td><td>10</td></tr>
 <tr><td>2</td><td>Pneumonia</td><td>7</td></tr>
@@ -47,10 +93,17 @@ tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
 </table>
 </div>
 
+<!-- ปี 2567 -->
 <div id="y2567" class="yearTable" style="display:none;">
 <h2>ปี 2567</h2>
 <table>
-<thead><tr><th>อันดับ</th><th>สาเหตุการเสียชีวิต</th><th>จำนวนผู้เสียชีวิต</th></tr></thead>
+<thead>
+<tr>
+<th>อันดับ</th>
+<th>สาเหตุการเสียชีวิต</th>
+<th>จำนวนผู้เสียชีวิต</th>
+</tr>
+</thead>
 <tbody>
 <tr><td>1</td><td>Sepsis</td><td>28</td></tr>
 <tr><td>2</td><td>Stroke</td><td>15</td></tr>
@@ -61,40 +114,77 @@ tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
 </table>
 </div>
 
-<div id="y2568" class="yearTable">
-<h2>ปี 2568</h2>
+<!-- ปี 2568 และ 2569 ใช้ div เดียว -->
+<div id="dynamicYear" class="yearTable">
+<h2 id="yearTitle">ปี 2568</h2>
 <div id="sheetTable">⏳ กำลังโหลดข้อมูล...</div>
 </div>
 
 </main>
 
 <script>
-document.getElementById("yearSelect").addEventListener("change", function(){
+
+const sheetLinks = {
+  y2568: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQkeNpfWKavDklihMocnMbZtI4nub9OYOTJ4Y5ceK7ThGmnVTYm0wmyumDjx6wqLbs6JLV2Yna6872o/pub?gid=0&single=true&output=csv",
+  y2569: "https://docs.google.com/spreadsheets/d/1MyBLNY1Q5EbP94jJ4hBrrQcLdA-wjBq5pIvEW4G6_S0/export?format=csv&gid=315649845"
+};
+
+function showYear(year){
+
   document.querySelectorAll(".yearTable").forEach(div => div.style.display="none");
-  document.getElementById(this.value).style.display="block";
+
+  if(year === "y2566" || year === "y2567"){
+    document.getElementById(year).style.display="block";
+    return;
+  }
+
+  document.getElementById("dynamicYear").style.display="block";
+  document.getElementById("yearTitle").innerText = "ปี " + year.replace("y","");
+
+  fetch(sheetLinks[year])
+    .then(res => res.text())
+    .then(text => {
+
+      const rows = text.split(/\r?\n/);
+      let table = "<table><thead><tr>";
+
+      const headerCols = rows[0].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+
+      headerCols.forEach(col => {
+        table += "<th>" + col.replace(/"/g,"").trim() + "</th>";
+      });
+
+      table += "</tr></thead><tbody>";
+
+      for(let i=1;i<rows.length;i++){
+        if(!rows[i]) continue;
+
+        const cols = rows[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+        if(!cols) continue;
+
+        table += "<tr>";
+        cols.forEach(c=>{
+          table += "<td>" + c.replace(/"/g,"").trim() + "</td>";
+        });
+        table += "</tr>";
+      }
+
+      table += "</tbody></table>";
+      document.getElementById("sheetTable").innerHTML = table;
+
+    })
+    .catch(()=>{
+      document.getElementById("sheetTable").innerHTML = "⚠️ โหลดข้อมูลไม่สำเร็จ";
+    });
+}
+
+document.getElementById("yearSelect")
+.addEventListener("change", function(){
+  showYear(this.value);
 });
 
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQkeNpfWKavDklihMocnMbZtI4nub9OYOTJ4Y5ceK7ThGmnVTYm0wmyumDjx6wqLbs6JLV2Yna6872o/pub?gid=0&single=true&output=csv";
+showYear("y2568");
 
-fetch(sheetURL)
-  .then(response => response.text())
-  .then(data => {
-    const rows = data.trim().split("\n").map(r => r.split(","));
-    let html = "<table><thead><tr>";
-    rows[0].forEach(col => html += `<th>${col}</th>`);
-    html += "</tr></thead><tbody>";
-    rows.slice(1).forEach(r => {
-      html += "<tr>";
-      r.forEach(c => html += `<td>${c}</td>`);
-      html += "</tr>";
-    });
-    html += "</tbody></table>";
-    document.getElementById("sheetTable").innerHTML = html;
-  })
-  .catch(err => {
-    document.getElementById("sheetTable").innerHTML = "⚠️ โหลดข้อมูลไม่สำเร็จ";
-    console.error(err);
-  });
 </script>
 
 </body>
