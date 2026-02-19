@@ -3,51 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5 อันดับสาเหตุการเสียชีวิตรายปี</title>
+<title>ข้อมูลสาเหตุการเสียชีวิต</title>
 
 <style>
-body { 
-  margin:0; 
-  font-family:sans-serif; 
-  background: linear-gradient(to right, rgb(55,194,115), rgb(183,226,196)); 
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:linear-gradient(to right,rgb(55,194,115),rgb(183,226,196));
 }
-header { text-align:center; padding:30px 20px; }
-main { 
-  padding:20px; 
-  max-width:900px; 
-  margin:auto; 
-  background-color: rgba(255,255,255,0.9); 
-  border-radius:12px; 
+header{
+  text-align:center;
+  padding:30px 20px;
 }
-a.back { 
-  display:inline-block; 
-  margin-bottom:20px; 
-  color:navy; 
-  text-decoration:none; 
-  font-weight:bold; 
+main{
+  max-width:900px;
+  margin:auto;
+  background:#ffffffeb;
+  padding:25px;
+  border-radius:14px;
+  box-shadow:0 6px 15px rgba(0,0,0,.15);
 }
-label { font-weight:bold; margin-right:10px; }
-select { 
-  padding:6px 10px; 
-  border-radius:6px; 
-  border:1px solid #333; 
+.back{
+  display:inline-block;
+  margin-bottom:20px;
+  padding:8px 14px;
+  background:#043a22;
+  color:white;
+  text-decoration:none;
+  border-radius:8px;
+  font-weight:bold;
 }
-table { 
-  width:100%; 
-  border-collapse: collapse; 
-  margin-top:15px; 
+.back:hover{
+  background:#065f37;
 }
-th, td { 
-  padding:12px; 
-  text-align:center; 
-  border:1px solid #333; 
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
 }
-th { 
-  background-color: rgb(4,44,24); 
-  color:white; 
+th,td{
+  padding:12px;
+  text-align:center;
+  border:1px solid #333;
 }
-tr:nth-child(even) { 
-  background-color: rgba(0,0,0,0.05); 
+th{
+  background:#043a22;
+  color:#fff;
+}
+tr:nth-child(even){
+  background:#f2f2f2;
+}
+.loading{
+  text-align:center;
+  font-size:18px;
+  padding:20px;
 }
 </style>
 </head>
@@ -55,135 +64,66 @@ tr:nth-child(even) {
 <body>
 
 <header>
-    <h1>5 อันดับสาเหตุการเสียชีวิตรายปี</h1>
+<h1>ข้อมูลสาเหตุการเสียชีวิต</h1>
 </header>
 
 <main>
 
-<a href="index.html" class="back">&larr; กลับหน้าหลัก</a>
+<a href="index.html" class="back">← กลับหน้าหลัก</a>
 
-<div style="margin-bottom:20px;">
-  <label for="yearSelect">เลือกปี:</label>
-  <select id="yearSelect">
-    <option value="y2566">2566</option>
-    <option value="y2567">2567</option>
-    <option value="y2568" selected>2568</option>
-    <option value="y2569">2569</option>
-  </select>
-</div>
-
-<!-- ปี 2566 -->
-<div id="y2566" class="yearTable" style="display:none;">
-<h2>ปี 2566</h2>
-<table>
-<thead>
-<tr>
-<th>อันดับ</th>
-<th>สาเหตุการเสียชีวิต</th>
-<th>จำนวนผู้เสียชีวิต</th>
-</tr>
-</thead>
-<tbody>
-<tr><td>1</td><td>ตายไม่ทราบสาเหตุ</td><td>10</td></tr>
-<tr><td>2</td><td>Pneumonia</td><td>7</td></tr>
-<tr><td>3</td><td>จมน้ำ</td><td>7</td></tr>
-<tr><td>4</td><td>Sepsis</td><td>5</td></tr>
-<tr><td>5</td><td>Myocardial infarction</td><td>5</td></tr>
-</tbody>
-</table>
-</div>
-
-<!-- ปี 2567 -->
-<div id="y2567" class="yearTable" style="display:none;">
-<h2>ปี 2567</h2>
-<table>
-<thead>
-<tr>
-<th>อันดับ</th>
-<th>สาเหตุการเสียชีวิต</th>
-<th>จำนวนผู้เสียชีวิต</th>
-</tr>
-</thead>
-<tbody>
-<tr><td>1</td><td>Sepsis</td><td>28</td></tr>
-<tr><td>2</td><td>Stroke</td><td>15</td></tr>
-<tr><td>3</td><td>Pneumonia</td><td>10</td></tr>
-<tr><td>4</td><td>Cancer</td><td>10</td></tr>
-<tr><td>5</td><td>Gastrointestinal Bleeding</td><td>9</td></tr>
-</tbody>
-</table>
-</div>
-
-<!-- ปี 2568 และ 2569 ใช้ div เดียว -->
-<div id="dynamicYear" class="yearTable">
-<h2 id="yearTitle">ปี 2568</h2>
-<div id="sheetTable">⏳ กำลังโหลดข้อมูล...</div>
-</div>
+<div id="sheetTable" class="loading">⏳ กำลังโหลดข้อมูล...</div>
 
 </main>
 
 <script>
 
-const sheetLinks = {
-  y2568: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQkeNpfWKavDklihMocnMbZtI4nub9OYOTJ4Y5ceK7ThGmnVTYm0wmyumDjx6wqLbs6JLV2Yna6872o/pub?gid=0&single=true&output=csv",
-  y2569: "https://docs.google.com/spreadsheets/d/1MyBLNY1Q5EbP94jJ4hBrrQcLdA-wjBq5pIvEW4G6_S0/export?format=csv&gid=315649845"
-};
+const sheetURL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vTUqpsgf7K29NxV-kuTlMay7sO11u031BSK7C9GjRgrTxxVjJprMqtrhGWXOosWJH3dkVEo-dxc23El/pub?gid=0&single=true&output=csv";
 
-function showYear(year){
+fetch(sheetURL)
+.then(res => res.text())
+.then(text => {
 
-  document.querySelectorAll(".yearTable").forEach(div => div.style.display="none");
+  const rows = text.trim().split(/\r?\n/);
 
-  if(year === "y2566" || year === "y2567"){
-    document.getElementById(year).style.display="block";
+  if(rows.length === 0){
+    document.getElementById("sheetTable").innerHTML = "ไม่มีข้อมูล";
     return;
   }
 
-  document.getElementById("dynamicYear").style.display="block";
-  document.getElementById("yearTitle").innerText = "ปี " + year.replace("y","");
+  let html = "<table><thead><tr>";
 
-  fetch(sheetLinks[year])
-    .then(res => res.text())
-    .then(text => {
+  // สร้างหัวตารางจากชีตจริง
+  const headers = rows[0].split(",");
+  headers.forEach(h=>{
+    html += "<th>"+h.replace(/"/g,"")+"</th>";
+  });
 
-      const rows = text.split(/\r?\n/);
-      let table = "<table><thead><tr>";
+  html += "</tr></thead><tbody>";
 
-      const headerCols = rows[0].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+  // สร้างข้อมูลทั้งหมดตามลำดับชีต
+  for(let i=1;i<rows.length;i++){
+    if(!rows[i]) continue;
+    const cols = rows[i].split(",");
 
-      headerCols.forEach(col => {
-        table += "<th>" + col.replace(/"/g,"").trim() + "</th>";
-      });
-
-      table += "</tr></thead><tbody>";
-
-      for(let i=1;i<rows.length;i++){
-        if(!rows[i]) continue;
-
-        const cols = rows[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
-        if(!cols) continue;
-
-        table += "<tr>";
-        cols.forEach(c=>{
-          table += "<td>" + c.replace(/"/g,"").trim() + "</td>";
-        });
-        table += "</tr>";
+    html += "<tr>";
+    cols.forEach(c=>{
+      let value = c.replace(/"/g,"").replace(/,/g,"").trim();
+      if(!isNaN(value) && value !== ""){
+        value = Number(value).toLocaleString("th-TH");
       }
-
-      table += "</tbody></table>";
-      document.getElementById("sheetTable").innerHTML = table;
-
-    })
-    .catch(()=>{
-      document.getElementById("sheetTable").innerHTML = "⚠️ โหลดข้อมูลไม่สำเร็จ";
+      html += "<td>"+value+"</td>";
     });
-}
+    html += "</tr>";
+  }
 
-document.getElementById("yearSelect")
-.addEventListener("change", function(){
-  showYear(this.value);
+  html += "</tbody></table>";
+  document.getElementById("sheetTable").innerHTML = html;
+
+})
+.catch(()=>{
+  document.getElementById("sheetTable").innerHTML = "⚠️ โหลดข้อมูลไม่สำเร็จ";
 });
-
-showYear("y2568");
 
 </script>
 
