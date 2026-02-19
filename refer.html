@@ -5,16 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Refer Dashboard</title>
 <style>
-body {
+body{
     margin:0;
-    font-family:sans-serif;
-    background: linear-gradient(to right, rgb(55,194,115), rgb(183,226,196));
+    font-family:Arial, sans-serif;
+    background:#042d6b;
 }
-header { text-align:center; padding:30px 20px; }
-main { padding:20px; max-width:1200px; margin:auto; }
-a.back { display:inline-block; margin-bottom:20px; color:navy; text-decoration:none; font-weight:bold; }
-.select-table { margin:20px 0; padding:10px; font-size:16px; }
-
+header{
+   text-align: center;
+    padding: 30px 20px;
+    color: #fff;
+    text-shadow: 1px 1px 2px #fff(207, 214, 212, 0);
+    }
+         main {
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+            background-color: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 /* Grid สำหรับตาราง */
 .tables-grid {
     display: grid;
@@ -27,28 +35,28 @@ a.back { display:inline-block; margin-bottom:20px; color:navy; text-decoration:n
     background-color: rgba(255,255,255,0.95);
     border-radius: 12px;
     padding: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px #fff(237, 236, 236, 0.1);
     overflow-x: auto;
 }
 .table-card h2 { text-align:center; margin-top:0; }
 
 /* ตารางทั่วไป */
 table { width:100%; border-collapse: collapse; }
-th, td { padding: 12px; text-align:center; border-bottom:1px solid #ddd; transition: background 0.3s, transform 0.2s; }
-th { background: linear-gradient(90deg, #4a90e2, #50e3c2); color:#fff; text-transform: uppercase; }
-tr:hover { background-color: rgba(79,209,197,0.15); transform: scale(1.01); }
+th, td { padding: 12px; text-align:center; border-bottom:1px solid #fff; transition:  0.3s, transform 0.2s; }
+th { background: linear-gradient(90deg, #02274c, #032f9c); color:#fff; text-transform: uppercase; }
+tr:hover { background-color: #fff(79,209,197,0.15); transform: scale(1.01); }
 tfoot td { font-weight: bold; background: linear-gradient(90deg, #1a365d, #2b6cb0); color: #fff; }
 
 /* Zebra stripe */
-table tr:nth-child(even) { background-color: rgba(0,0,0,0.05); }
-table tr:nth-child(odd) { background-color: rgba(0,0,0,0.02); }
+table tr:nth-child(even) { background-color:#fff(250, 244, 244, 0.05); }
+table tr:nth-child(odd) { background-color: #fff(0,0,0,0.02); }
 
 /* ไฮไลท์คอลัมน์ รพ. และ sticky */
 table td.rp-column {
     font-weight:bold;
     font-size:16px;
-    color:#1a365d;
-    text-align:left;
+    color:#041f48;
+    text-align:center;
     position: sticky;
     left: 0;
     background-color: rgba(255,255,255,0.95);
